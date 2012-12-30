@@ -1,6 +1,6 @@
 # RedisModel
 
-TODO: Write a gem description
+ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 
 ## Installation
 
@@ -18,7 +18,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class MyModel
+  include RedisModel::Model
+  attribute :name, String
+  attribute :age, Integer
+end
+
+MyModel.create!(:name => 'Ian', :age => 28)
+```
+
+## Supported Features
+
+TODO.
 
 ## Contributing
 

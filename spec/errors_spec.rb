@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe RedisModel::Errors do
   class TestModel
-    include RedisModel
+    include RedisModel::Model
 
     attribute :foo, String
   end
