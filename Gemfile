@@ -1,4 +1,10 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in redis_model.gemspec
+gem 'rake'
+gem 'rspec'
+
+platform :mri_19 do
+  gem 'cane'
+end
+
 gemspec
