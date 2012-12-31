@@ -1,6 +1,7 @@
 module Modis
   class ModisError < StandardError; end
   class RecordNotSaved < ModisError; end
+  class RecordNotFound < ModisError; end
 
   module Errors
     def errors

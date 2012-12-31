@@ -17,6 +17,7 @@ module Modis
         include Modis::Errors
         include Modis::Transaction
         include Modis::Persistence
+        include Modis::Finders
       end
     end
   end
