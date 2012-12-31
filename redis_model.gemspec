@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'redis_model/version'
+require 'modis/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "redis_model"
-  gem.version       = RedisModel::VERSION
+  gem.name          = "modis"
+  gem.version       = Modis::VERSION
   gem.authors       = ["Ian Leitch"]
   gem.email         = ["port001@gmail.com"]
   gem.description   = "ActiveModel + Redis"

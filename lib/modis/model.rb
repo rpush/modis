@@ -1,4 +1,4 @@
-module RedisModel
+module Modis
   module Model
     def self.included(base)
       base.instance_eval do
@@ -13,10 +13,10 @@ module RedisModel
         define_model_callbacks :update
         define_model_callbacks :destroy
 
-        include RedisModel::Attributes
-        include RedisModel::Errors
-        include RedisModel::Transaction
-        include RedisModel::Persistence
+        include Modis::Attributes
+        include Modis::Errors
+        include Modis::Transaction
+        include Modis::Persistence
       end
     end
   end

@@ -2,13 +2,13 @@ require 'spec_helper'
 
 module AttributesSpec
   class MockModel
-    include RedisModel::Model
+    include Modis::Model
 
     attribute :foo, String
   end
 end
 
-describe RedisModel::Attributes do
+describe Modis::Attributes do
   let(:model) { AttributesSpec::MockModel.new }
 
   it 'defines attributes' do

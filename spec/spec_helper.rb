@@ -6,15 +6,15 @@ rescue LoadError
   puts "Coverage disabled."
 end
 
-require 'redis_model'
+require 'modis'
 
-RedisModel.configure do |config|
-  config.key_namespace = 'redis_model'
+Modis.configure do |config|
+  config.key_namespace = 'modis'
 end
 
 RSpec.configure do |config|
   config.before :each do
-    keys = Redis.current.keys "#{RedisModel.config.key_namespace}:*"
+    keys = Redis.current.keys "#{Modis.config.key_namespace}:*"
     Redis.current.del *keys unless keys.empty?
   end
 end

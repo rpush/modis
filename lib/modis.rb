@@ -1,0 +1,10 @@
+require 'redis'
+require 'active_model'
+
+require 'modis/version'
+require 'modis/configuration'
+require 'modis/attributes'
+require 'modis/errors'
+require 'modis/persistence'
+require 'modis/transaction'
+require 'modis/model'

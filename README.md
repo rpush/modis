@@ -6,7 +6,7 @@ ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 
 Add this line to your application's Gemfile:
 
-    gem 'redis_model'
+    gem 'modis'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install redis_model
+    $ gem install modis
 
 ## Usage
 

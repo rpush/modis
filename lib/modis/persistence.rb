@@ -1,4 +1,4 @@
-module RedisModel
+module Modis
   module Persistence
     def self.included(base)
       base.extend ClassMethods
@@ -8,7 +8,7 @@ module RedisModel
       def key_namespace
         return @key_namespace if @key_namespace
         parts = name.split('::').map(&:underscore)
-        parts.unshift(RedisModel.config.key_namespace)
+        parts.unshift(Modis.config.key_namespace)
         @key_namespace = parts.compact.join(':')
       end
     end

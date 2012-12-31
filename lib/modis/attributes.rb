@@ -1,4 +1,4 @@
-module RedisModel
+module Modis
   module Attributes
     def self.included(base)
       base.extend ClassMethods

@@ -1,4 +1,4 @@
-module RedisModel
+module Modis
   module Transaction
     def self.included(base)
       base.extend ClassMethods

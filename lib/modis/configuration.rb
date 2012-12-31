@@ -1,4 +1,4 @@
-module RedisModel
+module Modis
   def self.configure
     yield config
   end

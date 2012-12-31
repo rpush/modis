@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe RedisModel::Errors do
+describe Modis::Errors do
   class TestModel
-    include RedisModel::Model
+    include Modis::Model
 
     attribute :foo, String
   end
