@@ -7,7 +7,9 @@ module Modis
     module ClassMethods
       def find(id)
         values = Redis.current.hgetall(key_for(id))
-        raise RecordNotFound unless values['id'].present?
+        unless values['id'].present?
+          raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
+        end
         model = new
         model.attributes.update(values.symbolize_keys)
         model

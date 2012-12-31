@@ -19,6 +19,12 @@ describe Modis::Finders do
     found.age.should eq model.age.to_s
   end
 
+  it 'raises an error if the record could not be found' do
+    expect do
+      FindersSpec::MockModel.find(model.id + 1)
+    end.to raise_error(Modis::RecordNotFound, "Couldn't find FindersSpec::MockModel with id=#{model.id + 1}")
+  end
+
   it 'does not flag an attribute as dirty on a found instance' do
     found.id_changed?.should be_false
   end
