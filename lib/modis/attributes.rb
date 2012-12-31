@@ -17,12 +17,14 @@ module Modis
     module ClassMethods
       def attribute(name, type = String)
         attributes[name] = type
+        define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
             attributes[:#{name}]
           end
 
           def #{name}=(value)
+            #{name}_will_change!
             attributes[:#{name}] = value
           end
         EOS
@@ -34,7 +36,7 @@ module Modis
     end
 
     def assign_attributes(hash)
-      attributes.update(hash)
+      hash.each { |k, v| send("#{k}=", v)}
     end
   end
 end

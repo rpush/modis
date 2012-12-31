@@ -3,6 +3,8 @@ require 'spec_helper'
 module PersistenceSpec
   class MockModel
     include Modis::Model
+
+    attribute :name, String
   end
 end
 
@@ -21,6 +23,11 @@ describe Modis::Persistence do
 
   it 'returns a nil key if not saved' do
     model.key.should be_nil
+  end
+
+  it 'works with ActiveModel dirty tracking' do
+    expect { model.name = 'Ian' }.to change(model, :changed).to(['name'])
+    model.name_changed?.should be_true
   end
 
   # describe 'create' do
