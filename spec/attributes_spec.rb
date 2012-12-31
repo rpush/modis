@@ -1,13 +1,15 @@
 require 'spec_helper'
 
-describe RedisModel::Attributes do
-  class TestModel
+module AttributesSpec
+  class MockModel
     include RedisModel::Model
 
     attribute :foo, String
   end
+end
 
-  let(:model) { TestModel.new }
+describe RedisModel::Attributes do
+  let(:model) { AttributesSpec::MockModel.new }
 
   it 'defines attributes' do
     model.foo = :bar
