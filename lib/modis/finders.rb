@@ -10,9 +10,15 @@ module Modis
         unless values['id'].present?
           raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
         end
-        model = new
-        model.attributes.update(values.symbolize_keys)
-        model
+        instantiate(values, :new_record => false)
+      end
+
+      def all
+        ids = Redis.current.smembers(key_for(:all))
+        records = Redis.current.pipelined do
+          ids.map { |id| Redis.current.hgetall(key_for(id)) }
+        end
+        records.map { |record| instantiate(record, :new_record => false) }
       end
     end
   end

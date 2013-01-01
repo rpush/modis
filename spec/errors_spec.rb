@@ -1,16 +1,18 @@
 require 'spec_helper'
 
-describe Modis::Errors do
-  class TestModel
+module ErrorsSpec
+  class MockModel
     include Modis::Model
 
-    attribute :foo, String
+    attribute :name, String
   end
+end
 
-  let(:model) { TestModel.new }
+describe Modis::Errors do
+  let(:model) { ErrorsSpec::MockModel.new }
 
   it 'adds errors' do
-    model.errors.add(:foo, 'is not valid')
-    model.errors[:foo].should eq ['is not valid']
+    model.errors.add(:name, 'is not valid')
+    model.errors[:name].should eq ['is not valid']
   end
 end

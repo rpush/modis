@@ -30,6 +30,18 @@ describe Modis::Persistence do
     model.name_changed?.should be_true
   end
 
+  it 'reset dirty tracking when saved' do
+    model.name = 'Ian'
+    model.name_changed?.should be_true
+    model.save!
+    model.name_changed?.should be_false
+  end
+
+  it 'reset dirty tracking when created' do
+    model = PersistenceSpec::MockModel.create!(:name => 'Ian')
+    model.name_changed?.should be_false
+  end
+
   # describe 'create' do
   # end
 
