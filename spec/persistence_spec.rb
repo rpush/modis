@@ -42,9 +42,24 @@ describe Modis::Persistence do
     model.name_changed?.should be_false
   end
 
-  # describe 'create' do
-  # end
+  it 'is persisted' do
+    model.persisted?.should be_true
+  end
 
-  # describe 'create' do
-  # end
+  shared_examples_for 'all create methods' do
+    it 'reset dirty tracking' do
+      model = PersistenceSpec::MockModel.send(create_method, :name => 'Ian')
+      model.name_changed?.should be_false
+    end
+  end
+
+  describe 'create' do
+    let(:create_method) { :create }
+    it_should_behave_like 'all create methods'
+  end
+
+  describe 'create!' do
+    let(:create_method) { :create! }
+    it_should_behave_like 'all create methods'
+  end
 end
