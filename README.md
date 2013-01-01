@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/ileitch/modis.png?branch=master)](http://travis-ci.org/ileitch/modis)
+
 # RedisModel
 
 ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
