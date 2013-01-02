@@ -4,7 +4,7 @@ module ErrorsSpec
   class MockModel
     include Modis::Model
 
-    attribute :name, String
+    attribute :name, :string
   end
 end
 

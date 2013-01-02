@@ -4,8 +4,8 @@ module FindersSpec
   class MockModel
     include Modis::Model
 
-    attribute :name, String
-    attribute :age, Integer
+    attribute :name, :string
+    attribute :age, :integer
   end
 end
 

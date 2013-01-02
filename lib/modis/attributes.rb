@@ -1,6 +1,6 @@
 module Modis
   module Attributes
-    TYPES = [String, Integer, Float, Time]
+    TYPES = [:string, :integer, :float, :time, :boolean]
 
     def self.included(base)
       base.extend ClassMethods
@@ -12,13 +12,13 @@ module Modis
 
         self.attributes = {}
 
-        attribute :id, Integer
+        attribute :id, :integer
       end
     end
 
     module ClassMethods
-      def attribute(name, type = String)
-        raise UnsupportedAttributeType.new(type.name) unless TYPES.include?(type)
+      def attribute(name, type = :string)
+        raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
         attributes[name] = type
         define_attribute_methods [name]
@@ -54,15 +54,18 @@ module Modis
       return if value.nil?
       type = self.class.attributes[attribute]
 
-      if type == String
+      if type == :string
         value.to_s
-      elsif type == Integer
+      elsif type == :integer
         value.to_i
-      elsif type == Float
+      elsif type == :float
         value.to_f
-      elsif type == Time
+      elsif type == :time
         return value if value.kind_of?(Time)
         Time.parse(value)
+      elsif :boolean
+        return true if value == 'true'
+        false
       else
         value
       end

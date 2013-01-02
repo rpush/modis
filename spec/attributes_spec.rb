@@ -4,10 +4,11 @@ module AttributesSpec
   class MockModel
     include Modis::Model
 
-    attribute :name, String
-    attribute :age, Integer
-    attribute :percentage, Float
-    attribute :created_at, Time
+    attribute :name, :string
+    attribute :age, :integer
+    attribute :percentage, :float
+    attribute :created_at, :time
+    attribute :flag, :boolean
   end
 end
 
@@ -21,14 +22,14 @@ describe Modis::Attributes do
 
   it 'exposes the attributes defined on the model' do
     AttributesSpec::MockModel.attributes.should ==
-      { :id => Integer, :name => String, :age => Integer, :percentage => Float,
-        :created_at => Time }
+      { :id => :integer, :name => :string, :age => :integer,
+        :percentage => :float, :created_at => :time, :flag => :boolean }
   end
 
   it 'raises an error for an unsupported attribute type' do
     expect do
       class AttributesSpec::MockModel
-        attribute :unsupported, Symbol
+        attribute :unsupported, :symbol
       end
     end.to raise_error(Modis::UnsupportedAttributeType)
   end
@@ -38,22 +39,22 @@ describe Modis::Attributes do
     model.name.should eq 'bar'
   end
 
-  it 'coerces a String attribute' do
+  it 'coerces a :string attribute' do
     model.name = :bar
     model.name.should eq 'bar'
   end
 
-  it 'coerces a Integer attribute' do
+  it 'coerces a :integer attribute' do
     model.age = "18"
     model.age.should eq 18
   end
 
-  it 'coerces a Float attribute' do
+  it 'coerces a :float attribute' do
     model.percentage = "18.6"
     model.percentage.should eq 18.6
   end
 
-  it 'coerces a Time attribute' do
+  it 'coerces a :time attribute' do
     now = Time.now
     model.created_at = now.to_s
     model.created_at.should be_kind_of(Time)
@@ -65,5 +66,11 @@ describe Modis::Attributes do
     model.created_at = now
     model.created_at.should be_kind_of(Time)
     model.created_at.to_s.should eq now.to_s
+  end
+
+  it 'coerces a :boolean attribute' do
+    now = Time.now
+    model.flag = 'true'
+    model.flag.should eq true
   end
 end
