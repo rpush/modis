@@ -18,7 +18,7 @@ module Modis
 
       def create(attrs)
         # run_callbacks :create do
-          model = instantiate(attrs)
+          model = new(attrs)
           model.save
           model
         # end
@@ -26,7 +26,7 @@ module Modis
 
       def create!(attrs)
         # run_callbacks :create do
-        model = instantiate(attrs)
+        model = new(attrs)
         model.save!
         model
         # end

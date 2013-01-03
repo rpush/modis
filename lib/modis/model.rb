@@ -13,8 +13,6 @@ module Modis
         define_model_callbacks :update
         define_model_callbacks :destroy
 
-        extend ClassMethods
-
         include Modis::Errors
         include Modis::Attributes
         include Modis::Transaction
@@ -23,15 +21,12 @@ module Modis
       end
     end
 
-    module ClassMethods
-      def instantiate(record, options={})
-        model = new
-        model.assign_attributes(record.symbolize_keys)
-        model.reset_changes
-         if options.key?(:new_record)
-          model.instance_variable_set('@new_record', options[:new_record])
-        end
-        model
+    def initialize(record=nil, options={})
+      assign_attributes(record.symbolize_keys) if record
+      apply_defaults
+      reset_changes
+       if options.key?(:new_record)
+        instance_variable_set('@new_record', options[:new_record])
       end
     end
 

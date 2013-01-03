@@ -4,8 +4,8 @@ module AttributesSpec
   class MockModel
     include Modis::Model
 
-    attribute :name, :string
-    attribute :age, :integer
+    attribute :name, :string, :default => 'Janet'
+    attribute :age, :integer, :default => 60
     attribute :percentage, :float
     attribute :created_at, :time
     attribute :flag, :boolean
@@ -20,10 +20,13 @@ describe Modis::Attributes do
     model.name.should == 'bar'
   end
 
-  it 'exposes the attributes defined on the model' do
-    AttributesSpec::MockModel.attributes.should ==
-      { :id => :integer, :name => :string, :age => :integer,
-        :percentage => :float, :created_at => :time, :flag => :boolean }
+  it 'applies an default value' do
+    model.name.should eq 'Janet'
+    model.age.should eq 60
+  end
+
+  it 'does not mark an attribute with a default as dirty' do
+    model.name_changed?.should be_false
   end
 
   it 'raises an error for an unsupported attribute type' do
@@ -38,6 +41,8 @@ describe Modis::Attributes do
     model.assign_attributes(:name => 'bar')
     model.name.should eq 'bar'
   end
+
+  it 'does not attempt to assign attributes that are not defined on the model'
 
   it 'coerces a :string attribute' do
     model.name = :bar
@@ -73,4 +78,7 @@ describe Modis::Attributes do
     model.flag = 'true'
     model.flag.should eq true
   end
+
+  it 'coerces a :array attribute'
+  it 'coerces a :hash attribute'
 end

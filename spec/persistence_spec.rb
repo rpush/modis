@@ -51,6 +51,8 @@ describe Modis::Persistence do
       model = PersistenceSpec::MockModel.send(create_method, :name => 'Ian')
       model.name_changed?.should be_false
     end
+
+    it 'preserves dirty state for the duration of the callback life cycle'
   end
 
   describe 'create' do

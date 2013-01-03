@@ -17,10 +17,10 @@ module Modis
     end
 
     module ClassMethods
-      def attribute(name, type = :string)
+      def attribute(name, type = :string, options = {})
         raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
-        attributes[name] = type
+        attributes[name] = options.update({ :type => type })
         define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
@@ -41,18 +41,26 @@ module Modis
     end
 
     def assign_attributes(hash)
-      hash.each { |k, v| send("#{k}=", v)}
-    end
-
-    def reset_changes
-      @changed_attributes.clear
+      hash.each { |k, v| send("#{k}=", v) }
     end
 
     protected
 
+    def reset_changes
+      @changed_attributes.clear if @changed_attributes
+    end
+
+    def apply_defaults
+      defaults = {}
+      self.class.attributes.each do |attribute, options|
+        defaults[attribute] = options[:default] if options[:default]
+      end
+      assign_attributes(defaults)
+    end
+
     def coerce_value(value, attribute)
       return if value.nil?
-      type = self.class.attributes[attribute]
+      type = self.class.attributes[attribute][:type]
 
       if type == :string
         value.to_s
@@ -65,7 +73,8 @@ module Modis
         Time.parse(value)
       elsif :boolean
         return true if value == 'true'
-        false
+        return false if value == 'false'
+        # TODO: raise!
       else
         value
       end
