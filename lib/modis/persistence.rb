@@ -56,7 +56,9 @@ module Modis
       self.class.transaction do
         callback = new_record? ? :update : :create
         run_callbacks callback do
-          future = Redis.current.hmset(self.class.key_for(id), *attributes.to_a.flatten)
+          attrs = []
+          attributes.each { |k, v| attrs << k << coerce_to_string(k, v) }
+          future = Redis.current.hmset(self.class.key_for(id), attrs)
           track(id) if new_record?
         end
       end

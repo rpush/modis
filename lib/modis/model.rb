@@ -22,8 +22,8 @@ module Modis
     end
 
     def initialize(record=nil, options={})
-      assign_attributes(record.symbolize_keys) if record
       apply_defaults
+      assign_attributes(record.symbolize_keys) if record
       reset_changes
        if options.key?(:new_record)
         instance_variable_set('@new_record', options[:new_record])

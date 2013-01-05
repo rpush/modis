@@ -1,6 +1,6 @@
 module Modis
   module Attributes
-    TYPES = [:string, :integer, :float, :time, :boolean]
+    TYPES = [:string, :integer, :float, :time, :boolean, :array, :hash]
 
     def self.included(base)
       base.extend ClassMethods
@@ -28,7 +28,7 @@ module Modis
           end
 
           def #{name}=(value)
-            value = coerce_value(value, :#{name})
+            value = coerce_to_type(:#{name}, value)
             #{name}_will_change! unless value == attributes[:#{name}]
             attributes[:#{name}] = value
           end
@@ -58,8 +58,21 @@ module Modis
       assign_attributes(defaults)
     end
 
-    def coerce_value(value, attribute)
-      return if value.nil?
+    def coerce_to_string(attribute, value)
+      return if value.blank?
+      type = self.class.attributes[attribute][:type]
+      if type == :array || type == :hash
+        MultiJson.encode(value) if value
+      elsif type == :time
+        value.iso8601
+      else
+        value.to_s
+      end
+    end
+
+    def coerce_to_type(attribute, value)
+      # TODO: allow an attribute to be set to nil
+      return if value.blank?
       type = self.class.attributes[attribute][:type]
 
       if type == :string
@@ -71,13 +84,24 @@ module Modis
       elsif type == :time
         return value if value.kind_of?(Time)
         Time.parse(value)
-      elsif :boolean
+      elsif type == :boolean
         return true if value == 'true'
         return false if value == 'false'
-        # TODO: raise!
+        raise AttributeCoercionError.new("'#{value}' cannot be coerced to a :boolean.")
+      elsif type == :array
+        decode_json(value, Array, attribute)
+      elsif type == :hash
+        decode_json(value, Hash, attribute)
       else
         value
       end
+    end
+
+    def decode_json(value, type, attribute)
+      return value if value.kind_of?(type)
+      value = MultiJson.decode(value) if value.kind_of?(String)
+      return value if value.kind_of?(type)
+      raise AttributeCoercionError.new("Expected #{attribute} to be an #{type}, got #{value.class} instead.")
     end
   end
 end

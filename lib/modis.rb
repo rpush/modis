@@ -1,5 +1,6 @@
 require 'redis'
 require 'active_model'
+require 'active_support/all'
 
 require 'modis/version'
 require 'modis/configuration'

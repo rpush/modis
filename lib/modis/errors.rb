@@ -3,6 +3,7 @@ module Modis
   class RecordNotSaved < ModisError; end
   class RecordNotFound < ModisError; end
   class UnsupportedAttributeType < ModisError; end
+  class AttributeCoercionError < ModisError; end
 
   module Errors
     def errors
