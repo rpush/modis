@@ -7,6 +7,6 @@ module Modis
     @config ||= Configuration.new
   end
 
-  class Configuration < Struct.new(:key_namespace)
+  class Configuration < Struct.new(:namespace)
   end
 end

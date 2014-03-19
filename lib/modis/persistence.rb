@@ -5,15 +5,23 @@ module Modis
     end
 
     module ClassMethods
-      def key_namespace
-        return @key_namespace if @key_namespace
+      def namespace
+        return @namespace if @namespace
+        name.split('::').map(&:underscore).join(':')
+      end
+
+      def namespace=(value)
+        @namespace = value
+      end
+
+      def absolute_namespace
         parts = name.split('::').map(&:underscore)
-        parts.unshift(Modis.config.key_namespace)
-        @key_namespace = parts.compact.join(':')
+        parts = [Modis.config.namespace, namespace]
+        @absolute_namespace = parts.compact.join(':')
       end
 
       def key_for(id)
-        "#{key_namespace}:#{id}"
+        "#{absolute_namespace}:#{id}"
       end
 
       def create(attrs)
@@ -31,10 +39,6 @@ module Modis
         model
         # end
       end
-    end
-
-    def key_namespace
-      self.class.key_namespace
     end
 
     def persisted?
@@ -88,7 +92,7 @@ module Modis
     protected
 
     def set_id
-      self.id = Redis.current.incr("#{key_namespace}_id_seq")
+      self.id = Redis.current.incr("#{self.class.absolute_namespace}_id_seq")
     end
 
     def track(id)

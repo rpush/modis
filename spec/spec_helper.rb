@@ -9,12 +9,12 @@ end
 require 'modis'
 
 Modis.configure do |config|
-  config.key_namespace = 'modis'
+  config.namespace = 'modis'
 end
 
 RSpec.configure do |config|
   config.before :each do
-    keys = Redis.current.keys "#{Modis.config.key_namespace}:*"
+    keys = Redis.current.keys "#{Modis.config.namespace}:*"
     Redis.current.del *keys unless keys.empty?
   end
 end

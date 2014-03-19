@@ -11,9 +11,21 @@ end
 describe Modis::Persistence do
   let(:model) { PersistenceSpec::MockModel.new }
 
-  it 'returns a key namespace' do
-    PersistenceSpec::MockModel.key_namespace.should == 'modis:persistence_spec:mock_model'
-    model.key_namespace.should == 'modis:persistence_spec:mock_model'
+  describe 'namespaces' do
+    it 'returns the namespace' do
+      PersistenceSpec::MockModel.namespace.should eq 'persistence_spec:mock_model'
+    end
+
+    it 'returns the absolute namespace' do
+      PersistenceSpec::MockModel.absolute_namespace.should eq 'modis:persistence_spec:mock_model'
+    end
+
+    it 'allows the namespace to be set explicitly' do
+      PersistenceSpec::MockModel.namespace = 'other'
+      PersistenceSpec::MockModel.absolute_namespace.should eq 'modis:other'
+    end
+
+    after { PersistenceSpec::MockModel.namespace = nil }
   end
 
   it 'returns a key' do
