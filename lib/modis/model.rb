@@ -14,17 +14,28 @@ module Modis
         define_model_callbacks :destroy
 
         include Modis::Errors
-        include Modis::Attributes
         include Modis::Transaction
         include Modis::Persistence
         include Modis::Finders
+        include Modis::Attributes
+
+        base.extend(ClassMethods)
+      end
+    end
+
+    module ClassMethods
+      def inherited(child)
+        super
+        bootstrap_sti(self, child)
       end
     end
 
     def initialize(record=nil, options={})
+      set_sti_type
       apply_defaults
       assign_attributes(record.symbolize_keys) if record
       reset_changes
+
        if options.key?(:new_record)
         instance_variable_set('@new_record', options[:new_record])
       end

@@ -5,9 +5,34 @@ module Modis
     end
 
     module ClassMethods
+      # :nodoc:
+      def bootstrap_sti(parent, child)
+        child.instance_eval do
+        parent.instance_eval do
+          class << self
+              attr_accessor :sti_parent
+            end
+            attribute :type, :string
+          end
+
+          class << self
+            delegate :attributes, to: :sti_parent
+          end
+
+          @sti_child = true
+          @sti_parent = parent
+        end
+      end
+
+      # :nodoc:
+      def sti_child?
+        @sti_child == true
+      end
+
       def namespace
+        return sti_parent.namespace if sti_child?
         return @namespace if @namespace
-        name.split('::').map(&:underscore).join(':')
+        @namespace = name.split('::').map(&:underscore).join(':')
       end
 
       def namespace=(value)
@@ -15,7 +40,6 @@ module Modis
       end
 
       def absolute_namespace
-        parts = name.split('::').map(&:underscore)
         parts = [Modis.config.namespace, namespace]
         @absolute_namespace = parts.compact.join(':')
       end

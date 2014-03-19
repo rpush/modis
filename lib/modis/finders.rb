@@ -18,7 +18,17 @@ module Modis
         records = Redis.current.pipelined do
           ids.map { |id| Redis.current.hgetall(key_for(id)) }
         end
-        records.map { |record| new(record, :new_record => false) }
+        records.map do |record|
+          klass = model_class(record)
+          klass.new(record, :new_record => false)
+        end
+      end
+
+      private
+
+      def model_class(record)
+        return self if record["type"].blank?
+        return record["type"].constantize
       end
     end
   end

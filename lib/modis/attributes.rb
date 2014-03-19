@@ -6,6 +6,12 @@ module Modis
       base.extend ClassMethods
 
       base.instance_eval do
+        bootstrap_attributes
+      end
+    end
+
+    module ClassMethods
+      def bootstrap_attributes
         class << self
           attr_accessor :attributes
         end
@@ -14,10 +20,9 @@ module Modis
 
         attribute :id, :integer
       end
-    end
 
-    module ClassMethods
       def attribute(name, type = :string, options = {})
+        return if attributes.keys.include?(name)
         raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
         attributes[name] = options.update({ :type => type })
@@ -48,6 +53,12 @@ module Modis
     end
 
     protected
+
+    def set_sti_type
+      if self.class.sti_child?
+        assign_attributes(type: self.class.name)
+      end
+    end
 
     def reset_changes
       @changed_attributes.clear if @changed_attributes

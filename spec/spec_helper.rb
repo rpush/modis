@@ -13,7 +13,7 @@ Modis.configure do |config|
 end
 
 RSpec.configure do |config|
-  config.before :each do
+  config.after :each do
     keys = Redis.current.keys "#{Modis.config.namespace}:*"
     Redis.current.del *keys unless keys.empty?
   end
