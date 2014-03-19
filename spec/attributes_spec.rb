@@ -44,7 +44,10 @@ describe Modis::Attributes do
     model.name.should eq 'bar'
   end
 
-  it 'does not attempt to assign attributes that are not defined on the model'
+  it 'does not attempt to assign attributes that are not defined on the model' do
+    model.assign_attributes(:missing_attr => 'derp')
+    model.respond_to?(:missing_attr).should be_false
+  end
 
   describe ':string type' do
     it 'is coerced' do

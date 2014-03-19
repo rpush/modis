@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ```ruby
 class MyModel
-  include RedisModel::Model
+  include Modis::Models
   attribute :name, String
   attribute :age, Integer
 end

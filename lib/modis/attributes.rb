@@ -41,7 +41,10 @@ module Modis
     end
 
     def assign_attributes(hash)
-      hash.each { |k, v| send("#{k}=", v) }
+      hash.each do |k, v|
+        setter = "#{k}="
+        send(setter, v) if respond_to?(setter)
+      end
     end
 
     protected
