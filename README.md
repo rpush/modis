@@ -1,4 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/ileitch/modis.png?branch=master)](http://travis-ci.org/ileitch/modis)
+[![Code Climate](https://codeclimate.com/github/ileitch/modis.png)](https://codeclimate.com/github/ileitch/modis)
 [![Coverage Status](https://coveralls.io/repos/ileitch/modis/badge.png?branch=master)](https://coveralls.io/r/ileitch/modis?branch=master)
 
 # Modis
