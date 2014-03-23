@@ -58,6 +58,8 @@ describe Modis::Persistence do
     model.persisted?.should be_true
   end
 
+  it 'does not track the ID if the underlying Redis command failed'
+
   shared_examples_for 'all create methods' do
     it 'reset dirty tracking' do
       model = PersistenceSpec::MockModel.send(create_method, :name => 'Ian')

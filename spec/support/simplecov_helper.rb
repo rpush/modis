@@ -6,7 +6,14 @@ module SimpleCovHelper
     SimpleCov.start do
       add_filter '/spec/'
       command_name name
-      formatter SimpleCov::Formatter::QualityFormatter
+
+      if ENV['TRAVIS']
+        require 'coveralls'
+        formatter SimpleCov::Formatter::MultiFormatter[SimpleCov::Formatter::QualityFormatter,
+                                                       Coveralls::SimpleCov::Formatter]
+      else
+        formatter SimpleCov::Formatter::QualityFormatter
+      end
     end
   end
 end

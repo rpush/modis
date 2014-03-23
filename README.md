@@ -1,6 +1,7 @@
 [![Build Status](https://secure.travis-ci.org/ileitch/modis.png?branch=master)](http://travis-ci.org/ileitch/modis)
+[![Coverage Status](https://coveralls.io/repos/modis/modis/badge.png?branch=master)](https://coveralls.io/r/modis/modis?branch=master)
 
-# RedisModel
+# Modis
 
 ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 

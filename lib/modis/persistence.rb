@@ -78,6 +78,7 @@ module Modis
     end
 
     def save
+      return false unless valid?
       future = nil
       set_id if new_record?
 
