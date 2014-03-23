@@ -1,5 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/ileitch/modis.png?branch=master)](http://travis-ci.org/ileitch/modis)
-[![Coverage Status](https://coveralls.io/repos/modis/modis/badge.png?branch=master)](https://coveralls.io/r/modis/modis?branch=master)
+[![Coverage Status](https://coveralls.io/repos/ileitch/modis/badge.png?branch=master)](https://coveralls.io/r/ileitch/modis?branch=master)
 
 # Modis
 
