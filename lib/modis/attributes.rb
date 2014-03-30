@@ -1,6 +1,6 @@
 module Modis
   module Attributes
-    TYPES = [:string, :integer, :float, :time, :boolean, :array, :hash]
+    TYPES = [:string, :integer, :float, :datetime, :boolean, :array, :hash]
 
     def self.included(base)
       base.extend ClassMethods
@@ -77,7 +77,7 @@ module Modis
       type = self.class.attributes[attribute][:type]
       if type == :array || type == :hash
         MultiJson.encode(value) if value
-      elsif type == :time
+      elsif type == :datetime
         value.iso8601
       else
         value.to_s
@@ -95,7 +95,7 @@ module Modis
         value.to_i
       elsif type == :float
         value.to_f
-      elsif type == :time
+      elsif type == :datetime
         return value if value.kind_of?(Time)
         Time.parse(value)
       elsif type == :boolean
