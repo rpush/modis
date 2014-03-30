@@ -7,7 +7,7 @@ module AttributesSpec
     attribute :name, :string, default: 'Janet'
     attribute :age, :integer, default: 60
     attribute :percentage, :float
-    attribute :created_at, :datetime
+    attribute :created_at, :timestamp
     attribute :flag, :boolean
     attribute :array, :array
     attribute :hash, :hash
@@ -89,7 +89,7 @@ describe Modis::Attributes do
     end
   end
 
-  describe ':datetime type' do
+  describe ':timestamp type' do
     it 'is coerced' do
       now = Time.now
       model.created_at = now
