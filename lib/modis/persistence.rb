@@ -78,7 +78,39 @@ module Modis
     end
 
     def save
-      return false unless valid?
+      begin
+        create_or_update
+      rescue Modis::RecordInvalid
+        false
+      end
+    end
+
+    def save!
+      create_or_update || (raise RecordNotSaved)
+    end
+
+    def destroy
+      self.class.transaction do
+        run_callbacks :destroy do
+          Redis.current.del(key)
+          untrack(id)
+        end
+      end
+    end
+
+    def reload
+      new_attributes = self.class.attributes_for(id)
+      initialize(new_attributes)
+      self
+    end
+
+    protected
+
+    def create_or_update
+      if !valid?
+        raise Modis::RecordInvalid, errors.full_messages.join(', ')
+      end
+
       future = nil
       set_id if new_record?
 
@@ -102,21 +134,6 @@ module Modis
         false
       end
     end
-
-    def save!
-      raise RecordNotSaved unless save
-    end
-
-    def destroy
-      self.class.transaction do
-        run_callbacks :destroy do
-          Redis.current.del(key)
-          untrack(id)
-        end
-      end
-    end
-
-    protected
 
     def set_id
       self.id = Redis.current.incr("#{self.class.absolute_namespace}_id_seq")

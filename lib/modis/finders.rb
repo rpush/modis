@@ -6,11 +6,7 @@ module Modis
 
     module ClassMethods
       def find(id)
-        values = Redis.current.hgetall(key_for(id))
-        unless values['id'].present?
-          raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
-        end
-        new(values, new_record: false)
+        new(attributes_for(id), new_record: false)
       end
 
       def all
@@ -22,6 +18,17 @@ module Modis
           klass = model_class(record)
           klass.new(record, new_record: false)
         end
+      end
+
+      def attributes_for(id)
+        if id.nil?
+          raise RecordNotFound, "Couldn't find #{name} without an ID"
+        end
+        values = Redis.current.hgetall(key_for(id))
+        unless values['id'].present?
+          raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
+        end
+        values
       end
 
       private

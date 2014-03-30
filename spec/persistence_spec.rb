@@ -98,6 +98,28 @@ describe Modis::Persistence do
 
   it 'does not track the ID if the underlying Redis command failed'
 
+  describe 'reload' do
+    it 'reloads attributes' do
+      model.save!
+      model2 = model.class.find(model.id)
+      model2.name = 'Changed'
+      model2.save!
+      expect { model.reload }.to change(model, :name).to('Changed')
+    end
+
+    it 'resets dirty tracking' do
+      model.save!
+      model.name = 'Foo'
+      model.name_changed?.should be_true
+      model.reload
+      model.name_changed?.should be_false
+    end
+
+    it 'raises an error if the record has not been saved' do
+      expect { model.reload }.to raise_error(Modis::RecordNotFound, "Couldn't find PersistenceSpec::MockModel without an ID")
+    end
+  end
+
   describe 'callbacks' do
     it 'preserves dirty state for the duration of the callback life cycle'
     it 'halts the chain if a callback returns false'
@@ -144,12 +166,13 @@ describe Modis::Persistence do
       model = PersistenceSpec::MockModel.create(name: 'Ian')
       model.name_changed?.should be_false
     end
-  end
 
-  describe 'create!' do
-    it 'raises an error if the record could not be saved' do
-      model.name = nil
-      expect { model.save! }.to raise_error(Modis::RecordNotSaved)
+    describe 'a valid model' do
+      it 'returns the created model'
+    end
+
+    describe 'an invalid model' do
+      it 'returns the unsaved model'
     end
   end
 end

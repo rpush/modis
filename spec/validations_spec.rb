@@ -37,7 +37,13 @@ describe 'validations' do
       model.name = nil
       expect do
         model.save!.should be_false
-      end.to raise_error(Modis::RecordNotSaved)
+      end.to raise_error(Modis::RecordInvalid)
+    end
+  end
+
+  describe 'create!' do
+    it 'raises an error if the record is not valid' do
+      expect { TestModel.create!(name: nil) }.to raise_error(Modis::RecordInvalid)
     end
   end
 end
