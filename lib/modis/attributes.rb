@@ -25,7 +25,7 @@ module Modis
         return if attributes.keys.include?(name)
         raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
-        attributes[name] = options.update({ :type => type })
+        attributes[name] = options.update({ type: type })
         define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}

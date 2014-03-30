@@ -4,8 +4,8 @@ module AttributesSpec
   class MockModel
     include Modis::Model
 
-    attribute :name, :string, :default => 'Janet'
-    attribute :age, :integer, :default => 60
+    attribute :name, :string, default: 'Janet'
+    attribute :age, :integer, default: 60
     attribute :percentage, :float
     attribute :created_at, :time
     attribute :flag, :boolean
@@ -40,13 +40,19 @@ describe Modis::Attributes do
   end
 
   it 'assigns attributes' do
-    model.assign_attributes(:name => 'bar')
+    model.assign_attributes(name: 'bar')
     model.name.should eq 'bar'
   end
 
   it 'does not attempt to assign attributes that are not defined on the model' do
-    model.assign_attributes(:missing_attr => 'derp')
+    model.assign_attributes(missing_attr: 'derp')
     model.respond_to?(:missing_attr).should be_false
+  end
+
+  it 'allows an attribute to be nilled' do
+    model.name = nil
+    model.save!
+    model.class.find(model.id).name.should be_nil
   end
 
   describe ':string type' do
@@ -125,7 +131,7 @@ describe Modis::Attributes do
     end
 
     it 'raises an error when assigned another type' do
-      expect { model.array = {:foo => :bar} }.to raise_error(Modis::AttributeCoercionError)
+      expect { model.array = {foo: :bar} }.to raise_error(Modis::AttributeCoercionError)
     end
 
     it 'does not raise an error when assigned a JSON array string' do
@@ -139,7 +145,7 @@ describe Modis::Attributes do
 
   describe ':hash type' do
     it 'is coerced' do
-      model.hash = {:foo => :bar}
+      model.hash = {foo: :bar}
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
       found.hash.should eq({'foo' => 'bar'})

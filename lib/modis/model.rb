@@ -9,6 +9,7 @@ module Modis
         extend ActiveModel::Naming
         extend ActiveModel::Callbacks
 
+        define_model_callbacks :save
         define_model_callbacks :create
         define_model_callbacks :update
         define_model_callbacks :destroy

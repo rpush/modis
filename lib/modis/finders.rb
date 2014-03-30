@@ -10,7 +10,7 @@ module Modis
         unless values['id'].present?
           raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
         end
-        new(values, :new_record => false)
+        new(values, new_record: false)
       end
 
       def all
@@ -20,7 +20,7 @@ module Modis
         end
         records.map do |record|
           klass = model_class(record)
-          klass.new(record, :new_record => false)
+          klass.new(record, new_record: false)
         end
       end
 

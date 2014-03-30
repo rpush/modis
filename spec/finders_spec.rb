@@ -17,7 +17,7 @@ module FindersSpec
 end
 
 describe Modis::Finders do
-  let!(:model) { FindersSpec::User.create!(:name => 'Ian', :age => 28) }
+  let!(:model) { FindersSpec::User.create!(name: 'Ian', age: 28) }
   let(:found) { FindersSpec::User.find(model.id) }
 
   it 'finds by ID' do
@@ -38,8 +38,8 @@ describe Modis::Finders do
 
   describe 'all' do
     it 'returns all records' do
-      m2 = FindersSpec::User.create!(:name => 'Tanya', :age => 30)
-      m3 = FindersSpec::User.create!(:name => 'Kyle', :age => 32)
+      m2 = FindersSpec::User.create!(name: 'Tanya', age: 30)
+      m3 = FindersSpec::User.create!(name: 'Kyle', age: 32)
 
       FindersSpec::User.all.should == [model, m2, m3]
     end
@@ -63,8 +63,8 @@ describe Modis::Finders do
     end
 
     it 'returns instances of the correct class' do
-      FindersSpec::Consumer.create!(:name => 'Kyle')
-      FindersSpec::Producer.create!(:name => 'Tanya')
+      FindersSpec::Consumer.create!(name: 'Kyle')
+      FindersSpec::Producer.create!(name: 'Tanya')
 
       models = FindersSpec::User.all
 
