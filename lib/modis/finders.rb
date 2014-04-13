@@ -6,7 +6,8 @@ module Modis
 
     module ClassMethods
       def find(id)
-        new(attributes_for(id), new_record: false)
+        record = attributes_for(id)
+        model_class(record).new(record, new_record: false)
       end
 
       def all

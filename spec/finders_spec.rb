@@ -75,6 +75,10 @@ describe Modis::Finders do
       ian.should be_kind_of(FindersSpec::User)
       kyle.should be_kind_of(FindersSpec::Consumer)
       tanya.should be_kind_of(FindersSpec::Producer)
+
+      FindersSpec::User.find(ian.id).should be_kind_of(FindersSpec::User)
+      FindersSpec::User.find(kyle.id).should be_kind_of(FindersSpec::Consumer)
+      FindersSpec::User.find(tanya.id).should be_kind_of(FindersSpec::Producer)
     end
   end
 end
