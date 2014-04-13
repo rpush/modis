@@ -5,6 +5,7 @@ module PersistenceSpec
     include Modis::Model
 
     attribute :name, :string, default: 'Ian'
+    attribute :age, :integer
     validates :name, presence: true
 
     before_create :test_before_create
@@ -98,6 +99,20 @@ describe Modis::Persistence do
 
   it 'does not track the ID if the underlying Redis command failed'
 
+  it 'does not perform validation if validate: false' do
+    model.name = nil
+    model.valid?.should be_false
+    expect { model.save!(validate: false) }.to_not raise_error
+    model.reload
+    model.name.should be_nil
+
+    model.save(validate: false).should be_true
+  end
+
+  describe 'an existing record' do
+    it 'only updates dirty attributes'
+  end
+
   describe 'reload' do
     it 'reloads attributes' do
       model.save!
@@ -173,6 +188,79 @@ describe Modis::Persistence do
 
     describe 'an invalid model' do
       it 'returns the unsaved model'
+    end
+  end
+
+  describe 'update_attribute' do
+    it 'does not perform validation' do
+      model.name = nil
+      model.valid?.should be_false
+      model.name = 'Test'
+      model.update_attribute(:name, nil)
+    end
+
+    it 'invokes callbacks' do
+      model.update_attribute(:name, 'Derp')
+      model.called_callbacks.should_not be_empty
+    end
+
+    it 'updates all dirty attributes' do
+      model.age = 29
+      model.update_attribute(:name, 'Derp')
+      model.reload
+      model.age.should eq 29
+    end
+  end
+
+  describe 'update_attributes!' do
+it 'updates the given attributes' do
+      model.update_attributes!(name: 'Derp', age: 29)
+      model.reload
+      model.name.should eq 'Derp'
+      model.age.should eq 29
+    end
+
+    it 'invokes callbacks' do
+      model.update_attributes!(name: 'Derp')
+      model.called_callbacks.should_not be_empty
+    end
+
+    it 'updates all dirty attributes' do
+      model.age = 29
+      model.update_attributes!(name: 'Derp')
+      model.reload
+      model.age.should eq 29
+    end
+
+    it 'raises an error if the model is invalid' do
+      expect do
+        model.update_attributes!(name: nil).should be_false
+        end.to raise_error(Modis::RecordInvalid)
+    end
+  end
+
+  describe 'update_attributes' do
+    it 'updates the given attributes' do
+      model.update_attributes(name: 'Derp', age: 29)
+      model.reload
+      model.name.should eq 'Derp'
+      model.age.should eq 29
+    end
+
+    it 'invokes callbacks' do
+      model.update_attributes(name: 'Derp')
+      model.called_callbacks.should_not be_empty
+    end
+
+    it 'updates all dirty attributes' do
+      model.age = 29
+      model.update_attributes(name: 'Derp')
+      model.reload
+      model.age.should eq 29
+    end
+
+    it 'returns false if the model is invalid' do
+      model.update_attributes(name: nil).should be_false
     end
   end
 end

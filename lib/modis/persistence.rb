@@ -77,16 +77,16 @@ module Modis
       defined?(@new_record) ? @new_record : true
     end
 
-    def save
+    def save(args={})
       begin
-        create_or_update
+        create_or_update(args)
       rescue Modis::RecordInvalid
         false
       end
     end
 
-    def save!
-      create_or_update || (raise RecordNotSaved)
+    def save!(args={})
+      create_or_update(args) || (raise RecordNotSaved)
     end
 
     def destroy
@@ -104,10 +104,26 @@ module Modis
       self
     end
 
+    def update_attribute(name, value)
+      assign_attributes(name => value)
+      save(validate: false)
+    end
+
+    def update_attributes(attrs)
+      assign_attributes(attrs)
+      save
+    end
+
+    def update_attributes!(attrs)
+      assign_attributes(attrs)
+      save!
+    end
+
     protected
 
-    def create_or_update
-      if !valid?
+    def create_or_update(args={})
+      skip_validate = args.key?(:validate) && args[:validate] == false
+      if !skip_validate && !valid?
         raise Modis::RecordInvalid, errors.full_messages.join(', ')
       end
 
