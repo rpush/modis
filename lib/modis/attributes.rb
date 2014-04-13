@@ -102,8 +102,8 @@ module Modis
         return value if value.kind_of?(Time)
         Time.parse(value)
       elsif type == :boolean
-        return true if value == 'true'
-        return false if value == 'false'
+        return true if [true, 'true'].include?(value)
+        return false if [false, 'false'].include?(value)
         raise AttributeCoercionError.new("'#{value}' cannot be coerced to a :boolean.")
       elsif type == :array
         decode_json(value, Array, attribute)
