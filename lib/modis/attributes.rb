@@ -26,17 +26,17 @@ module Modis
         return if attributes.keys.include?(name)
         raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
-        attributes[name] = options.update({ type: type })
+        attributes[name] = options.update({ 'type' => type })
         define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
-            attributes[:#{name}]
+            attributes['#{name}']
           end
 
           def #{name}=(value)
-            value = coerce_to_type(:#{name}, value)
-            #{name}_will_change! unless value == attributes[:#{name}]
-            attributes[:#{name}] = value
+            value = coerce_to_type('#{name}', value)
+            #{name}_will_change! unless value == attributes['#{name}']
+            attributes['#{name}'] = value
           end
         EOS
       end
@@ -76,7 +76,7 @@ module Modis
     def coerce_to_string(attribute, value)
       attribute = attribute.to_s
       return if value.blank?
-      type = self.class.attributes[attribute][:type]
+      type = self.class.attributes[attribute]['type']
       if type == :array || type == :hash
         MultiJson.encode(value) if value
       elsif type == :timestamp
@@ -90,7 +90,7 @@ module Modis
       # TODO: allow an attribute to be set to nil
       return if value.blank?
       attribute = attribute.to_s
-      type = self.class.attributes[attribute][:type]
+      type = self.class.attributes[attribute]['type']
 
       if type == :string
         value.to_s
