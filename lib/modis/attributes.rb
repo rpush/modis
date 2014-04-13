@@ -22,6 +22,7 @@ module Modis
       end
 
       def attribute(name, type = :string, options = {})
+        name = name.to_s
         return if attributes.keys.include?(name)
         raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
 
@@ -73,6 +74,7 @@ module Modis
     end
 
     def coerce_to_string(attribute, value)
+      attribute = attribute.to_s
       return if value.blank?
       type = self.class.attributes[attribute][:type]
       if type == :array || type == :hash
@@ -87,6 +89,7 @@ module Modis
     def coerce_to_type(attribute, value)
       # TODO: allow an attribute to be set to nil
       return if value.blank?
+      attribute = attribute.to_s
       type = self.class.attributes[attribute][:type]
 
       if type == :string
