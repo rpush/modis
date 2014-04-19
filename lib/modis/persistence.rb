@@ -49,19 +49,15 @@ module Modis
       end
 
       def create(attrs)
-        # run_callbacks :create do
           model = new(attrs)
           model.save
           model
-        # end
       end
 
       def create!(attrs)
-        # run_callbacks :create do
         model = new(attrs)
         model.save!
         model
-        # end
       end
     end
 

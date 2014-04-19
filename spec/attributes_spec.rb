@@ -11,6 +11,8 @@ module AttributesSpec
     attribute :flag, :boolean
     attribute :array, :array
     attribute :hash, :hash
+    attribute :hash_strict, :hash, strict: true
+    attribute :hash_not_strict, :hash, strict: false
   end
 end
 
@@ -151,16 +153,27 @@ describe Modis::Attributes do
       found.hash.should eq({'foo' => 'bar'})
     end
 
-    it 'raises an error when assigned another type' do
-      expect { model.hash = [1, 2, 3] }.to raise_error(Modis::AttributeCoercionError)
+    describe 'strict: true' do
+      it 'raises an error if the value cannot be decoded on assignment' do
+        expect { model.hash_strict = "test" }.to raise_error(MultiJson::ParseError)
+      end
+
+      it 'does not raise an error if the value can be decoded on assignment' do
+        expect { model.hash_strict = "{\"foo\":\"bar\"}" }.to_not raise_error
+      end
     end
 
-    it 'does not raise an error when assigned a JSON hash string' do
-      expect { model.hash = "{\"foo\":\"bar\"}" }.to_not raise_error
-    end
+    describe 'strict: false' do
+      it 'returns the value if it cannot be decoded' do
+        model.write_attribute(:hash_not_strict, "test")
+        model.save!
+        found = AttributesSpec::MockModel.find(model.id)
+        found.hash_not_strict.should eq "test"
+      end
 
-    it 'does not raise an error when a JSON string does not deserialize to an Hash' do
-      expect { model.hash = "[1,2,3]" }.to raise_error(Modis::AttributeCoercionError)
+      it 'does not raise an error when assigned another type' do
+        expect { model.hash_not_strict = "test" }.to_not raise_error
+      end
     end
   end
 end
