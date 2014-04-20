@@ -88,7 +88,7 @@ module Modis
     def destroy
       self.class.transaction do
         run_callbacks :destroy do
-          Redis.current.del(key)
+          Modis.redis.del(key)
           untrack(id)
         end
       end
@@ -132,7 +132,7 @@ module Modis
           run_callbacks callback do
             attrs = []
             attributes.each { |k, v| attrs << k << coerce_to_string(k, v) }
-            future = Redis.current.hmset(self.class.key_for(id), attrs)
+            future = Modis.redis.hmset(self.class.key_for(id), attrs)
             track(id) if new_record?
           end
         end
@@ -148,15 +148,15 @@ module Modis
     end
 
     def set_id
-      self.id = Redis.current.incr("#{self.class.absolute_namespace}_id_seq")
+      self.id = Modis.redis.incr("#{self.class.absolute_namespace}_id_seq")
     end
 
     def track(id)
-      Redis.current.sadd(self.class.key_for(:all), id)
+      Modis.redis.sadd(self.class.key_for(:all), id)
     end
 
     def untrack(id)
-      Redis.current.srem(self.class.key_for(:all), id)
+      Modis.redis.srem(self.class.key_for(:all), id)
     end
   end
 end

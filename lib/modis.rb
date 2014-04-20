@@ -11,3 +11,17 @@ require 'modis/persistence'
 require 'modis/transaction'
 require 'modis/finders'
 require 'modis/model'
+
+module Modis
+  @mutex = Mutex.new
+
+  def self.redis
+    return @redis if @redis
+    @mutex.synchronize { @redis = Redis.new }
+    @redis
+  end
+
+  def self.redis=(redis)
+    @redis = redis
+  end
+end

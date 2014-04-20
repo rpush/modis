@@ -14,7 +14,7 @@ end
 
 RSpec.configure do |config|
   config.after :each do
-    keys = Redis.current.keys "#{Modis.config.namespace}:*"
-    Redis.current.del *keys unless keys.empty?
+    keys = Modis.redis.keys "#{Modis.config.namespace}:*"
+    Modis.redis.del *keys unless keys.empty?
   end
 end

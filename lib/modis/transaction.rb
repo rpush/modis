@@ -6,7 +6,7 @@ module Modis
 
     module ClassMethods
       def transaction
-        Redis.current.multi { yield }
+        Modis.redis.multi { yield }
       end
     end
   end
