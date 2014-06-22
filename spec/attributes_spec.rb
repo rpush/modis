@@ -171,8 +171,11 @@ describe Modis::Attributes do
         found.hash_not_strict.should eq "test"
       end
 
-      it 'does not raise an error when assigned another type' do
-        expect { model.hash_not_strict = "test" }.to_not raise_error
+      it 'returns an integer as a string' do
+        model.hash_not_strict = 1
+        model.save!
+        found = AttributesSpec::MockModel.find(model.id)
+        found.hash_not_strict.should eq "1"
       end
     end
   end

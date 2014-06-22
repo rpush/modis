@@ -125,6 +125,8 @@ module Modis
         value = MultiJson.decode(value) if value.kind_of?(String)
       rescue MultiJson::ParseError
         raise if strict
+      else
+        value = value.to_s unless strict
       end
       if strict
         return value if value.kind_of?(type)
