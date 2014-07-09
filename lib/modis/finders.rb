@@ -11,10 +11,15 @@ module Modis
       end
 
       def all
-        ids = Modis.redis.smembers(key_for(:all))
-        records = Modis.redis.pipelined do
-          ids.map { |id| Modis.redis.hgetall(key_for(id)) }
+        records = []
+
+        Modis.with_connection do |redis|
+          ids = redis.smembers(key_for(:all))
+          records = redis.pipelined do
+            ids.map { |id| redis.hgetall(key_for(id)) }
+          end
         end
+
         records.map do |record|
           klass = model_class(record)
           klass.new(record, new_record: false)
@@ -25,7 +30,7 @@ module Modis
         if id.nil?
           raise RecordNotFound, "Couldn't find #{name} without an ID"
         end
-        values = Modis.redis.hgetall(key_for(id))
+        values = Modis.with_connection { |redis| redis.hgetall(key_for(id)) }
         unless values['id'].present?
           raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
         end

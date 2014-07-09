@@ -14,7 +14,9 @@ end
 
 RSpec.configure do |config|
   config.after :each do
-    keys = Modis.redis.keys "#{Modis.config.namespace}:*"
-    Modis.redis.del *keys unless keys.empty?
+    Modis.with_connection do |connection|
+      keys = connection.keys "#{Modis.config.namespace}:*"
+      connection.del *keys unless keys.empty?
+    end
   end
 end
