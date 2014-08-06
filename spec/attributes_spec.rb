@@ -35,10 +35,12 @@ describe Modis::Attributes do
 
   it 'raises an error for an unsupported attribute type' do
     expect do
-      class AttributesSpec::MockModel
-        attribute :unsupported, :symbol
-      end
-    end.to raise_error(Modis::UnsupportedAttributeType)
+      module AttributesSpec
+        class MockModel
+          attribute :unsupported, :symbol
+        end
+      end.to raise_error(Modis::UnsupportedAttributeType)
+    end
   end
 
   it 'assigns attributes' do
@@ -133,7 +135,7 @@ describe Modis::Attributes do
     end
 
     it 'raises an error when assigned another type' do
-      expect { model.array = {foo: :bar} }.to raise_error(Modis::AttributeCoercionError)
+      expect { model.array = { foo: :bar } }.to raise_error(Modis::AttributeCoercionError)
     end
 
     it 'does not raise an error when assigned a JSON array string' do
@@ -147,10 +149,10 @@ describe Modis::Attributes do
 
   describe ':hash type' do
     it 'is coerced' do
-      model.hash = {foo: :bar}
+      model.hash = { foo: :bar }
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      expect(found.hash).to eq({'foo' => 'bar'})
+      expect(found.hash).to eq('foo' => 'bar')
     end
 
     describe 'strict: true' do

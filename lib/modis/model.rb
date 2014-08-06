@@ -31,20 +31,19 @@ module Modis
       end
     end
 
-    def initialize(record=nil, options={})
+    def initialize(record = nil, options = {})
       set_sti_type
       apply_defaults
       assign_attributes(record.symbolize_keys) if record
       reset_changes
 
-       if options.key?(:new_record)
-        instance_variable_set('@new_record', options[:new_record])
-      end
+      return unless options.key?(:new_record)
+      instance_variable_set('@new_record', options[:new_record])
     end
 
     def ==(other)
       super || other.instance_of?(self.class) && id.present? && other.id == id
     end
-    alias :eql? :==
+    alias_method :eql?, :==
   end
 end

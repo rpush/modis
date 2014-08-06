@@ -8,8 +8,10 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.rspec_opts = ['--backtrace']
 end
 
-if RUBY_VERSION > '1.9' && defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ruby'
-  task :default => 'spec:cane'
+if ENV['TRAVIS'] && ENV['QUALITY'] == 'false'
+  task default: 'spec'
+elsif RUBY_VERSION > '1.9' && defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ruby'
+  task default: 'spec:quality'
 else
-  task :default => 'spec'
+  task default: 'spec'
 end

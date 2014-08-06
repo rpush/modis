@@ -24,9 +24,9 @@ module Modis
       def attribute(name, type = :string, options = {})
         name = name.to_s
         return if attributes.keys.include?(name)
-        raise UnsupportedAttributeType.new(type) unless TYPES.include?(type)
+        raise UnsupportedAttributeType, type unless TYPES.include?(type)
 
-        attributes[name] = options.update({ :type => type })
+        attributes[name] = options.update(type: type)
         define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
@@ -60,9 +60,8 @@ module Modis
     protected
 
     def set_sti_type
-      if self.class.sti_child?
-        assign_attributes(type: self.class.name)
-      end
+      return unless self.class.sti_child?
+      assign_attributes(type: self.class.name)
     end
 
     def reset_changes
@@ -104,12 +103,12 @@ module Modis
       elsif type == :float
         value.to_f
       elsif type == :timestamp
-        return value if value.kind_of?(Time)
+        return value if value.is_a?(Time)
         Time.parse(value)
       elsif type == :boolean
         return true if [true, 'true'].include?(value)
         return false if [false, 'false'].include?(value)
-        raise AttributeCoercionError.new("'#{value}' cannot be coerced to a :boolean.")
+        raise AttributeCoercionError, "'#{value}' cannot be coerced to a :boolean."
       elsif type == :array
         decode_json(value, Array, attribute, strict)
       elsif type == :hash
@@ -120,17 +119,17 @@ module Modis
     end
 
     def decode_json(value, type, attribute, strict)
-      return value if value.kind_of?(type)
+      return value if value.is_a?(type)
       begin
-        value = MultiJson.decode(value) if value.kind_of?(String)
+        value = MultiJson.decode(value) if value.is_a?(String)
       rescue MultiJson::ParseError
         raise if strict
       else
         value = value.to_s unless strict
       end
       if strict
-        return value if value.kind_of?(type)
-        raise AttributeCoercionError.new("Expected #{attribute} to be an #{type}, got #{value.class} instead.")
+        return value if value.is_a?(type)
+        raise AttributeCoercionError, "Expected #{attribute} to be an #{type}, got #{value.class} instead."
       end
       value
     end

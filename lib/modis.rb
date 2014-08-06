@@ -18,7 +18,7 @@ module Modis
 
   class << self
     attr_accessor :connection_pool, :redis_options, :connection_pool_size,
-      :connection_pool_timeout
+                  :connection_pool_timeout
   end
 
   self.redis_options = {}

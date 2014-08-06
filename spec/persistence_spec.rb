@@ -235,7 +235,7 @@ describe Modis::Persistence do
     it 'raises an error if the model is invalid' do
       expect do
         model.update_attributes!(name: nil).to be false
-        end.to raise_error(Modis::RecordInvalid)
+      end.to raise_error(Modis::RecordInvalid)
     end
   end
 

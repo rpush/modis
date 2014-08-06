@@ -27,9 +27,8 @@ module Modis
       end
 
       def attributes_for(id)
-        if id.nil?
-          raise RecordNotFound, "Couldn't find #{name} without an ID"
-        end
+        raise RecordNotFound, "Couldn't find #{name} without an ID" if id.nil?
+
         values = Modis.with_connection { |redis| redis.hgetall(key_for(id)) }
         unless values['id'].present?
           raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
@@ -41,7 +40,7 @@ module Modis
 
       def model_class(record)
         return self if record["type"].blank?
-        return record["type"].constantize
+        record["type"].constantize
       end
     end
   end

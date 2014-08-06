@@ -8,8 +8,8 @@ module Modis
       # :nodoc:
       def bootstrap_sti(parent, child)
         child.instance_eval do
-        parent.instance_eval do
-          class << self
+          parent.instance_eval do
+            class << self
               attr_accessor :sti_parent
             end
             attribute :type, :string
@@ -35,9 +35,7 @@ module Modis
         @namespace = name.split('::').map(&:underscore).join(':')
       end
 
-      def namespace=(value)
-        @namespace = value
-      end
+      attr_writer :namespace
 
       def absolute_namespace
         parts = [Modis.config.namespace, namespace]
@@ -49,9 +47,9 @@ module Modis
       end
 
       def create(attrs)
-          model = new(attrs)
-          model.save
-          model
+        model = new(attrs)
+        model.save
+        model
       end
 
       def create!(attrs)
@@ -73,15 +71,13 @@ module Modis
       defined?(@new_record) ? @new_record : true
     end
 
-    def save(args={})
-      begin
-        create_or_update(args)
-      rescue Modis::RecordInvalid
-        false
-      end
+    def save(args = {})
+      create_or_update(args)
+    rescue Modis::RecordInvalid
+      false
     end
 
-    def save!(args={})
+    def save!(args = {})
       create_or_update(args) || (raise RecordNotSaved)
     end
 
@@ -117,7 +113,7 @@ module Modis
 
     protected
 
-    def create_or_update(args={})
+    def create_or_update(args = {})
       skip_validate = args.key?(:validate) && args[:validate] == false
       if !skip_validate && !valid?
         raise Modis::RecordInvalid, errors.full_messages.join(', ')

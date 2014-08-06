@@ -1,0 +1,24 @@
+AllCops:
+  Exclude:
+    - modis.gemspec
+
+LineLength:
+  Enabled: false
+
+StringLiterals:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_raise
