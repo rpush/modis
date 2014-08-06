@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module AttributesSpec
+module AttributeSpec
   class MockModel
     include Modis::Model
 
@@ -11,13 +11,11 @@ module AttributesSpec
     attribute :flag, :boolean
     attribute :array, :array
     attribute :hash, :hash
-    attribute :hash_strict, :hash, strict: true
-    attribute :hash_not_strict, :hash, strict: false
   end
 end
 
-describe Modis::Attributes do
-  let(:model) { AttributesSpec::MockModel.new }
+describe Modis::Attribute do
+  let(:model) { AttributeSpec::MockModel.new }
 
   it 'defines attributes' do
     model.name = 'bar'
@@ -35,7 +33,7 @@ describe Modis::Attributes do
 
   it 'raises an error for an unsupported attribute type' do
     expect do
-      module AttributesSpec
+      module AttributeSpec
         class MockModel
           attribute :unsupported, :symbol
         end
@@ -59,11 +57,17 @@ describe Modis::Attributes do
     expect(model.class.find(model.id).name).to be_nil
   end
 
+  it 'allows an attribute to be a blank string' do
+    model.name = ''
+    model.save!
+    expect(model.class.find(model.id).name).to eq('')
+  end
+
   describe ':string type' do
     it 'is coerced' do
       model.name = 'Ian'
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
+      found = AttributeSpec::MockModel.find(model.id)
       expect(found.name).to eq('Ian')
     end
   end
@@ -72,7 +76,7 @@ describe Modis::Attributes do
     it 'is coerced' do
       model.age = 18
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
+      found = AttributeSpec::MockModel.find(model.id)
       expect(found.age).to eq(18)
     end
   end
@@ -81,14 +85,7 @@ describe Modis::Attributes do
     it 'is coerced' do
       model.percentage = 18.6
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
-      expect(found.percentage).to eq(18.6)
-    end
-
-    it 'coerces a string representation to Float' do
-      model.percentage = '18.6'
-      model.save!
-      found = AttributesSpec::MockModel.find(model.id)
+      found = AttributeSpec::MockModel.find(model.id)
       expect(found.percentage).to eq(18.6)
     end
   end
@@ -98,27 +95,29 @@ describe Modis::Attributes do
       now = Time.now
       model.created_at = now
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
-      expect(found.created_at).to be_kind_of(Time)
-      expect(found.created_at.to_s).to eq(now.to_s)
-    end
-
-    it 'coerces a string representation to Time' do
-      now = Time.now
-      model.created_at = now.to_s
-      model.save!
-      found = AttributesSpec::MockModel.find(model.id)
+      found = AttributeSpec::MockModel.find(model.id)
       expect(found.created_at).to be_kind_of(Time)
       expect(found.created_at.to_s).to eq(now.to_s)
     end
   end
 
   describe ':boolean type' do
-    it 'is coerced' do
-      model.flag = 'true'
-      model.save!
-      found = AttributesSpec::MockModel.find(model.id)
-      expect(found.flag).to be true
+    describe true do
+      it 'is coerced' do
+        model.flag = true
+        model.save!
+        found = AttributeSpec::MockModel.find(model.id)
+        expect(found.flag).to be true
+      end
+    end
+
+    describe false do
+      it 'is coerced' do
+        model.flag = false
+        model.save!
+        found = AttributeSpec::MockModel.find(model.id)
+        expect(found.flag).to be false
+      end
     end
 
     it 'raises an error if assigned a non-boolean value' do
@@ -130,20 +129,12 @@ describe Modis::Attributes do
     it 'is coerced' do
       model.array = [1, 2, 3]
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
+      found = AttributeSpec::MockModel.find(model.id)
       expect(found.array).to eq([1, 2, 3])
     end
 
     it 'raises an error when assigned another type' do
       expect { model.array = { foo: :bar } }.to raise_error(Modis::AttributeCoercionError)
-    end
-
-    it 'does not raise an error when assigned a JSON array string' do
-      expect { model.array = "[1,2,3]" }.to_not raise_error
-    end
-
-    it 'does not raise an error when a JSON string does not deserialize to an Array' do
-      expect { model.array = "{\"foo\":\"bar\"}" }.to raise_error(Modis::AttributeCoercionError)
     end
   end
 
@@ -151,34 +142,12 @@ describe Modis::Attributes do
     it 'is coerced' do
       model.hash = { foo: :bar }
       model.save!
-      found = AttributesSpec::MockModel.find(model.id)
-      expect(found.hash).to eq('foo' => 'bar')
+      found = AttributeSpec::MockModel.find(model.id)
+      expect(found.hash).to eq(foo: :bar)
     end
 
-    describe 'strict: true' do
-      it 'raises an error if the value cannot be decoded on assignment' do
-        expect { model.hash_strict = "test" }.to raise_error(MultiJson::ParseError)
-      end
-
-      it 'does not raise an error if the value can be decoded on assignment' do
-        expect { model.hash_strict = "{\"foo\":\"bar\"}" }.to_not raise_error
-      end
-    end
-
-    describe 'strict: false' do
-      it 'returns the value if it cannot be decoded' do
-        model.write_attribute(:hash_not_strict, "test")
-        model.save!
-        found = AttributesSpec::MockModel.find(model.id)
-        expect(found.hash_not_strict).to eq "test"
-      end
-
-      it 'returns an integer as a string' do
-        model.hash_not_strict = 1
-        model.save!
-        found = AttributesSpec::MockModel.find(model.id)
-        expect(found.hash_not_strict).to eq('1')
-      end
+    it 'raises an error when assigned another type' do
+      expect { model.hash = [] }.to raise_error(Modis::AttributeCoercionError)
     end
   end
 end

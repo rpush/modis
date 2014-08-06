@@ -2,6 +2,10 @@ module Modis
   module Persistence
     def self.included(base)
       base.extend ClassMethods
+      base.instance_eval do
+        after__internal_create :track
+        before__internal_destroy :untrack
+      end
     end
 
     module ClassMethods
@@ -12,11 +16,11 @@ module Modis
             class << self
               attr_accessor :sti_parent
             end
-            attribute :type, :string
+            attribute :type, :string unless attributes.key?('type')
           end
 
           class << self
-            delegate :attributes, to: :sti_parent
+            delegate :attributes, :indexed_attributes, to: :sti_parent
           end
 
           @sti_child = true
@@ -57,6 +61,10 @@ module Modis
         model.save!
         model
       end
+
+      def coerce_from_persistence(value)
+        YAML.load(value)
+      end
     end
 
     def persisted?
@@ -84,14 +92,15 @@ module Modis
     def destroy
       self.class.transaction do |redis|
         run_callbacks :destroy do
-          redis.del(key)
-          untrack(id, redis)
+          run_callbacks :_internal_destroy do
+            redis.del(key)
+          end
         end
       end
     end
 
     def reload
-      new_attributes = self.class.attributes_for(id)
+      new_attributes = Modis.with_connection { |redis| self.class.attributes_for(redis, id) }
       initialize(new_attributes)
       self
     end
@@ -111,7 +120,30 @@ module Modis
       save!
     end
 
-    protected
+    private
+
+    def coerce_for_persistence(attribute, value)
+      ensure_type(attribute, value)
+      YAML.dump(value)
+    end
+
+    def ensure_type(attribute, value)
+      type = self.class.attributes[attribute.to_s][:type]
+      type_classes = classes_for_type(type)
+
+      return unless value && !type_classes.include?(value.class)
+      raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type}' for attribute '#{name}'."
+    end
+
+    def classes_for_type(type)
+      { string: [String],
+        integer: [Fixnum],
+        float: [Float],
+        timestamp: [Time],
+        hash: [Hash],
+        array: [Array],
+        boolean: [TrueClass, FalseClass] }[type]
+    end
 
     def create_or_update(args = {})
       skip_validate = args.key?(:validate) && args[:validate] == false
@@ -121,15 +153,16 @@ module Modis
 
       future = nil
       set_id if new_record?
+      callback = new_record? ? :create : :update
 
       self.class.transaction do |redis|
         run_callbacks :save do
-          callback = new_record? ? :create : :update
           run_callbacks callback do
-            attrs = []
-            attributes.each { |k, v| attrs << k << coerce_to_string(k, v) }
-            future = redis.hmset(self.class.key_for(id), attrs)
-            track(id, redis) if new_record?
+            run_callbacks "_internal_#{callback}" do
+              attrs = []
+              attributes.each { |k, v| attrs << k << coerce_for_persistence(k, v) }
+              future = redis.hmset(self.class.key_for(id), attrs)
+            end
           end
         end
       end
@@ -137,6 +170,7 @@ module Modis
       if future && future.value == 'OK'
         reset_changes
         @new_record = false
+        new_record? ? add_to_index : update_index
         true
       else
         false
@@ -149,12 +183,12 @@ module Modis
       end
     end
 
-    def track(id, redis)
-      redis.sadd(self.class.key_for(:all), id)
+    def track
+      Modis.with_connection { |redis| redis.sadd(self.class.key_for(:all), id) }
     end
 
-    def untrack(id, redis)
-      redis.srem(self.class.key_for(:all), id)
+    def untrack
+      Modis.with_connection { |redis| redis.srem(self.class.key_for(:all), id) }
     end
   end
 end

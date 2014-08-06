@@ -9,16 +9,15 @@ module Modis
         extend ActiveModel::Naming
         extend ActiveModel::Callbacks
 
-        define_model_callbacks :save
-        define_model_callbacks :create
-        define_model_callbacks :update
-        define_model_callbacks :destroy
+        define_model_callbacks :save, :create, :update, :destroy
+        define_model_callbacks :_internal_create, :_internal_update, :_internal_destroy
 
         include Modis::Errors
         include Modis::Transaction
         include Modis::Persistence
-        include Modis::Finders
-        include Modis::Attributes
+        include Modis::Finder
+        include Modis::Attribute
+        include Modis::Index
 
         base.extend(ClassMethods)
       end

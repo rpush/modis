@@ -16,7 +16,7 @@ module FindersSpec
   end
 end
 
-describe Modis::Finders do
+describe Modis::Finder do
   let!(:model) { FindersSpec::User.create!(name: 'Ian', age: 28) }
   let(:found) { FindersSpec::User.find(model.id) }
 
