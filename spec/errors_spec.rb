@@ -13,6 +13,6 @@ describe Modis::Errors do
 
   it 'adds errors' do
     model.errors.add(:name, 'is not valid')
-    model.errors[:name].should eq ['is not valid']
+    expect(model.errors[:name]).to eq(['is not valid'])
   end
 end

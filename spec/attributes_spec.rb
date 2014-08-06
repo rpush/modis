@@ -21,16 +21,16 @@ describe Modis::Attributes do
 
   it 'defines attributes' do
     model.name = 'bar'
-    model.name.should == 'bar'
+    expect(model.name).to eq('bar')
   end
 
   it 'applies an default value' do
-    model.name.should eq 'Janet'
-    model.age.should eq 60
+    expect(model.name).to eq('Janet')
+    expect(model.age).to eq(60)
   end
 
   it 'does not mark an attribute with a default as dirty' do
-    model.name_changed?.should be_false
+    expect(model.name_changed?).to be false
   end
 
   it 'raises an error for an unsupported attribute type' do
@@ -43,18 +43,18 @@ describe Modis::Attributes do
 
   it 'assigns attributes' do
     model.assign_attributes(name: 'bar')
-    model.name.should eq 'bar'
+    expect(model.name).to eq 'bar'
   end
 
   it 'does not attempt to assign attributes that are not defined on the model' do
     model.assign_attributes(missing_attr: 'derp')
-    model.respond_to?(:missing_attr).should be_false
+    expect(model.respond_to?(:missing_attrexpect)).to be false
   end
 
   it 'allows an attribute to be nilled' do
     model.name = nil
     model.save!
-    model.class.find(model.id).name.should be_nil
+    expect(model.class.find(model.id).name).to be_nil
   end
 
   describe ':string type' do
@@ -62,7 +62,7 @@ describe Modis::Attributes do
       model.name = 'Ian'
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.name.should eq 'Ian'
+      expect(found.name).to eq('Ian')
     end
   end
 
@@ -71,7 +71,7 @@ describe Modis::Attributes do
       model.age = 18
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.age.should eq 18
+      expect(found.age).to eq(18)
     end
   end
 
@@ -80,14 +80,14 @@ describe Modis::Attributes do
       model.percentage = 18.6
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.percentage.should eq 18.6
+      expect(found.percentage).to eq(18.6)
     end
 
     it 'coerces a string representation to Float' do
       model.percentage = '18.6'
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.percentage.should eq 18.6
+      expect(found.percentage).to eq(18.6)
     end
   end
 
@@ -97,8 +97,8 @@ describe Modis::Attributes do
       model.created_at = now
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.created_at.should be_kind_of(Time)
-      found.created_at.to_s.should eq now.to_s
+      expect(found.created_at).to be_kind_of(Time)
+      expect(found.created_at.to_s).to eq(now.to_s)
     end
 
     it 'coerces a string representation to Time' do
@@ -106,8 +106,8 @@ describe Modis::Attributes do
       model.created_at = now.to_s
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.created_at.should be_kind_of(Time)
-      found.created_at.to_s.should eq now.to_s
+      expect(found.created_at).to be_kind_of(Time)
+      expect(found.created_at.to_s).to eq(now.to_s)
     end
   end
 
@@ -116,7 +116,7 @@ describe Modis::Attributes do
       model.flag = 'true'
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.flag.should eq true
+      expect(found.flag).to be true
     end
 
     it 'raises an error if assigned a non-boolean value' do
@@ -129,7 +129,7 @@ describe Modis::Attributes do
       model.array = [1, 2, 3]
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.array.should eq [1, 2, 3]
+      expect(found.array).to eq([1, 2, 3])
     end
 
     it 'raises an error when assigned another type' do
@@ -150,7 +150,7 @@ describe Modis::Attributes do
       model.hash = {foo: :bar}
       model.save!
       found = AttributesSpec::MockModel.find(model.id)
-      found.hash.should eq({'foo' => 'bar'})
+      expect(found.hash).to eq({'foo' => 'bar'})
     end
 
     describe 'strict: true' do
@@ -168,14 +168,14 @@ describe Modis::Attributes do
         model.write_attribute(:hash_not_strict, "test")
         model.save!
         found = AttributesSpec::MockModel.find(model.id)
-        found.hash_not_strict.should eq "test"
+        expect(found.hash_not_strict).to eq "test"
       end
 
       it 'returns an integer as a string' do
         model.hash_not_strict = 1
         model.save!
         found = AttributesSpec::MockModel.find(model.id)
-        found.hash_not_strict.should eq "1"
+        expect(found.hash_not_strict).to eq('1')
       end
     end
   end

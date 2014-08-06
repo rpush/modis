@@ -52,16 +52,16 @@ describe Modis::Persistence do
 
   describe 'namespaces' do
     it 'returns the namespace' do
-      PersistenceSpec::MockModel.namespace.should eq 'persistence_spec:mock_model'
+      expect(PersistenceSpec::MockModel.namespace).to eq('persistence_spec:mock_model')
     end
 
     it 'returns the absolute namespace' do
-      PersistenceSpec::MockModel.absolute_namespace.should eq 'modis:persistence_spec:mock_model'
+      expect(PersistenceSpec::MockModel.absolute_namespace).to eq('modis:persistence_spec:mock_model')
     end
 
     it 'allows the namespace to be set explicitly' do
       PersistenceSpec::MockModel.namespace = 'other'
-      PersistenceSpec::MockModel.absolute_namespace.should eq 'modis:other'
+      expect(PersistenceSpec::MockModel.absolute_namespace).to eq('modis:other')
     end
 
     after { PersistenceSpec::MockModel.namespace = nil }
@@ -69,44 +69,44 @@ describe Modis::Persistence do
 
   it 'returns a key' do
     model.save!
-    model.key.should eq 'modis:persistence_spec:mock_model:1'
+    expect(model.key).to eq('modis:persistence_spec:mock_model:1')
   end
 
   it 'returns a nil key if not saved' do
-    model.key.should be_nil
+    expect(model.key).to be_nil
   end
 
   it 'works with ActiveModel dirty tracking' do
     expect { model.name = 'Kyle' }.to change(model, :changed).to(['name'])
-    model.name_changed?.should be_true
+    expect(model.name_changed?).to be true
   end
 
   it 'resets dirty tracking when saved' do
     model.name = 'Kyle'
-    model.name_changed?.should be_true
+    expect(model.name_changed?).to be true
     model.save!
-    model.name_changed?.should be_false
+    expect(model.name_changed?).to be false
   end
 
   it 'resets dirty tracking when created' do
     model = PersistenceSpec::MockModel.create!(name: 'Ian')
-    model.name_changed?.should be_false
+    expect(model.name_changed?).to be false
   end
 
   it 'is persisted' do
-    model.persisted?.should be_true
+    expect(model.persisted?).to be true
   end
 
   it 'does not track the ID if the underlying Redis command failed'
 
   it 'does not perform validation if validate: false' do
     model.name = nil
-    model.valid?.should be_false
+    expect(model.valid?).to be false
     expect { model.save!(validate: false) }.to_not raise_error
     model.reload
-    model.name.should be_nil
+    expect(model.name).to be_nil
 
-    model.save(validate: false).should be_true
+    expect(model.save(validate: false)).to be true
   end
 
   describe 'an existing record' do
@@ -125,9 +125,9 @@ describe Modis::Persistence do
     it 'resets dirty tracking' do
       model.save!
       model.name = 'Foo'
-      model.name_changed?.should be_true
+      expect(model.name_changed?).to be true
       model.reload
-      model.name_changed?.should be_false
+      expect(model.name_changed?).to be false
     end
 
     it 'raises an error if the record has not been saved' do
@@ -142,12 +142,12 @@ describe Modis::Persistence do
     describe 'a new record' do
       it 'calls the before_create callback' do
         model.save!
-        model.called_callbacks.should include(:test_before_create)
+        expect(model.called_callbacks).to include(:test_before_create)
       end
 
       it 'calls the after create callback' do
         model.save!
-        model.called_callbacks.should include(:test_after_create)
+        expect(model.called_callbacks).to include(:test_after_create)
       end
     end
 
@@ -156,30 +156,30 @@ describe Modis::Persistence do
 
       it 'calls the before_update callback' do
         model.save!
-        model.called_callbacks.should include(:test_before_update)
+        expect(model.called_callbacks).to include(:test_before_update)
       end
 
       it 'calls the after update callback' do
         model.save!
-        model.called_callbacks.should include(:test_after_update)
+        expect(model.called_callbacks).to include(:test_after_update)
       end
     end
 
     it 'calls the before_save callback' do
       model.save!
-      model.called_callbacks.should include(:test_before_save)
+      expect(model.called_callbacks).to include(:test_before_save)
     end
 
     it 'calls the after save callback' do
       model.save!
-      model.called_callbacks.should include(:test_after_save)
+      expect(model.called_callbacks).to include(:test_after_save)
     end
   end
 
   describe 'create' do
     it 'resets dirty tracking' do
       model = PersistenceSpec::MockModel.create(name: 'Ian')
-      model.name_changed?.should be_false
+      expect(model.name_changed?).to be false
     end
 
     describe 'a valid model' do
@@ -194,47 +194,47 @@ describe Modis::Persistence do
   describe 'update_attribute' do
     it 'does not perform validation' do
       model.name = nil
-      model.valid?.should be_false
+      expect(model.valid?).to be false
       model.name = 'Test'
       model.update_attribute(:name, nil)
     end
 
     it 'invokes callbacks' do
       model.update_attribute(:name, 'Derp')
-      model.called_callbacks.should_not be_empty
+      expect(model.called_callbacks).to_not be_empty
     end
 
     it 'updates all dirty attributes' do
       model.age = 29
       model.update_attribute(:name, 'Derp')
       model.reload
-      model.age.should eq 29
+      expect(model.age).to eq 29
     end
   end
 
   describe 'update_attributes!' do
-it 'updates the given attributes' do
+    it 'updates the given attributes' do
       model.update_attributes!(name: 'Derp', age: 29)
       model.reload
-      model.name.should eq 'Derp'
-      model.age.should eq 29
+      expect(model.name).to eq 'Derp'
+      expect(model.age).to eq 29
     end
 
     it 'invokes callbacks' do
       model.update_attributes!(name: 'Derp')
-      model.called_callbacks.should_not be_empty
+      expect(model.called_callbacks).to_not be_empty
     end
 
     it 'updates all dirty attributes' do
       model.age = 29
       model.update_attributes!(name: 'Derp')
       model.reload
-      model.age.should eq 29
+      expect(model.age).to eq 29
     end
 
     it 'raises an error if the model is invalid' do
       expect do
-        model.update_attributes!(name: nil).should be_false
+        model.update_attributes!(name: nil).to be false
         end.to raise_error(Modis::RecordInvalid)
     end
   end
@@ -243,24 +243,24 @@ it 'updates the given attributes' do
     it 'updates the given attributes' do
       model.update_attributes(name: 'Derp', age: 29)
       model.reload
-      model.name.should eq 'Derp'
-      model.age.should eq 29
+      expect(model.name).to eq('Derp')
+      expect(model.age).to eq(29)
     end
 
     it 'invokes callbacks' do
       model.update_attributes(name: 'Derp')
-      model.called_callbacks.should_not be_empty
+      expect(model.called_callbacks).to_not be_empty
     end
 
     it 'updates all dirty attributes' do
       model.age = 29
       model.update_attributes(name: 'Derp')
       model.reload
-      model.age.should eq 29
+      expect(model.age).to eq(29)
     end
 
     it 'returns false if the model is invalid' do
-      model.update_attributes(name: nil).should be_false
+      expect(model.update_attributes(name: nil)).to be false
     end
   end
 end
