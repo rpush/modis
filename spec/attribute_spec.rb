@@ -11,6 +11,7 @@ module AttributeSpec
     attribute :flag, :boolean
     attribute :array, :array
     attribute :hash, :hash
+    attribute :string_or_hash, [:string, :hash]
   end
 end
 
@@ -148,6 +149,24 @@ describe Modis::Attribute do
 
     it 'raises an error when assigned another type' do
       expect { model.hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'Array', expected 'Hash' for attribute 'hash'.")
+    end
+  end
+
+  describe 'variable type' do
+    it 'is coerced' do
+      model.string_or_hash = { foo: :bar }
+      model.save!
+      found = AttributeSpec::MockModel.find(model.id)
+      expect(found.string_or_hash).to eq(foo: :bar)
+
+      model.string_or_hash = 'test'
+      model.save!
+      found = AttributeSpec::MockModel.find(model.id)
+      expect(found.string_or_hash).to eq('test')
+    end
+
+    it 'raises an error when assigned another type' do
+      expect { model.string_or_hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'Array', expected 'String', 'Hash' for attribute 'string_or_hash'.")
     end
   end
 end

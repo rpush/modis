@@ -128,8 +128,8 @@ module Modis
     end
 
     def ensure_type(attribute, value)
-      type = self.class.attributes[attribute.to_s][:type]
-      type_classes = classes_for_type(type)
+      types = self.class.attributes[attribute.to_s][:types]
+      type_classes = types.map { |type| classes_for_type(type) }.flatten
 
       return unless value && !type_classes.include?(value.class)
       raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type_classes.join('\', \'')}' for attribute '#{attribute}'."

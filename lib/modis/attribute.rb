@@ -20,12 +20,13 @@ module Modis
         attribute :id, :integer
       end
 
-      def attribute(name, type = :string, options = {})
+      def attribute(name, types, options = {})
         name = name.to_s
+        types = Array[*types]
         raise AttributeError, "Attribute with name '#{name}' has already been specified." if attributes.key?(name)
-        raise UnsupportedAttributeType, type unless TYPES.include?(type)
+        types.each { |type| raise UnsupportedAttributeType, type unless TYPES.include?(type) }
 
-        attributes[name] = options.update(type: type)
+        attributes[name] = options.update(types: types)
         define_attribute_methods [name]
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
