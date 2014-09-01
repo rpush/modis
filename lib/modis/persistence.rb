@@ -132,7 +132,7 @@ module Modis
       type_classes = classes_for_type(type)
 
       return unless value && !type_classes.include?(value.class)
-      raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type}' for attribute '#{name}'."
+      raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type_classes.join('\', \'')}' for attribute '#{attribute}'."
     end
 
     def classes_for_type(type)
