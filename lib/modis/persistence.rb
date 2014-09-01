@@ -146,11 +146,26 @@ module Modis
     end
 
     def create_or_update(args = {})
-      skip_validate = args.key?(:validate) && args[:validate] == false
-      if !skip_validate && !valid?
-        raise Modis::RecordInvalid, errors.full_messages.join(', ')
-      end
+      validate(args)
+      future = persist
 
+      if future && future.value == 'OK'
+        reset_changes
+        @new_record = false
+        new_record? ? add_to_index : update_index
+        true
+      else
+        false
+      end
+    end
+
+    def validate(args)
+      skip_validate = args.key?(:validate) && args[:validate] == false
+      return if skip_validate || valid?
+      raise Modis::RecordInvalid, errors.full_messages.join(', ')
+    end
+
+    def persist
       future = nil
       set_id if new_record?
       callback = new_record? ? :create : :update
@@ -167,14 +182,7 @@ module Modis
         end
       end
 
-      if future && future.value == 'OK'
-        reset_changes
-        @new_record = false
-        new_record? ? add_to_index : update_index
-        true
-      else
-        false
-      end
+      future
     end
 
     def set_id

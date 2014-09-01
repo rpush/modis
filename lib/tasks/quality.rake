@@ -11,13 +11,13 @@ begin
   end
 
   namespace :spec do
-    task :cane => ['spec', 'cane_quality']
+    task cane: %w(spec cane_quality)
   end
 rescue LoadError
   warn "cane not available."
 
   namespace :spec do
-    task :cane => ['spec']
+    task cane: ['spec']
   end
 end
 
@@ -26,9 +26,9 @@ begin
   RuboCop::RakeTask.new
 rescue LoadError
   warn 'rubocop not available.'
-  task :rubocop => ['spec']
+  task rubocop: ['spec']
 end
 
 namespace :spec do
-  task quality: ['cane', 'rubocop']
+  task quality: %w(cane rubocop)
 end
