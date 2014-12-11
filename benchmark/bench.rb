@@ -54,9 +54,9 @@ class Bench
       connection.del(*keys) unless keys.empty?
     end
 
-    if @profiles.any?
-      puts "\nProfiler dumps:"
-      @profiles.each { |dump| puts " * " + dump }
-    end
+    return unless @profiles.any?
+
+    puts "\nProfiler dumps:"
+    @profiles.each { |dump| puts " * " + dump }
   end
 end

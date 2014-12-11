@@ -122,6 +122,14 @@ module Modis
 
     private
 
+    TYPE_TO_CLASS_MAP = { string: [String],
+                          integer: [Fixnum],
+                          float: [Float],
+                          timestamp: [Time],
+                          hash: [Hash],
+                          array: [Array],
+                          boolean: [TrueClass, FalseClass] }.freeze
+
     def coerce_for_persistence(attribute, value)
       ensure_type(attribute, value)
       YAML.dump(value)
@@ -129,20 +137,10 @@ module Modis
 
     def ensure_type(attribute, value)
       types = self.class.attributes[attribute.to_s][:types]
-      type_classes = types.map { |type| classes_for_type(type) }.flatten
+      type_classes = types.map { |type| TYPE_TO_CLASS_MAP[type] }.flatten
 
       return unless value && !type_classes.include?(value.class)
       raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type_classes.join('\', \'')}' for attribute '#{attribute}'."
-    end
-
-    def classes_for_type(type)
-      { string: [String],
-        integer: [Fixnum],
-        float: [Float],
-        timestamp: [Time],
-        hash: [Hash],
-        array: [Array],
-        boolean: [TrueClass, FalseClass] }[type]
     end
 
     def create_or_update(args = {})
