@@ -22,3 +22,6 @@ CyclomaticComplexity:
 
 Style/SignalException:
   EnforcedStyle: only_raise
+
+Metrics/AbcSize:
+  Max: 20
