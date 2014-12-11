@@ -8,6 +8,7 @@ gem 'coveralls'
 platform :mri_19, :mri_20, :mri_21 do
   gem 'cane'
   gem 'rubocop'
+  gem 'stackprof'
 end
 
 gemspec
