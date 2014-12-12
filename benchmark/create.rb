@@ -40,4 +40,11 @@ Bench.run do |b|
       user.save!
     end
   end
+
+  b.report(:initialize) do
+    n.times do
+      User.new(name: 'Test', age: 30, percentage: 50.0, created_at: Time.now,
+      flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
+    end
+  end
 end
