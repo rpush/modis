@@ -64,12 +64,11 @@ module Modis
 
       YAML_MARKER = '---'.freeze
       def coerce_from_persistence(attribute, value)
-        # Modis < 1.3.0 used YAML for serialization.
+        # Modis < 1.4.0 used YAML for serialization.
         return YAML.load(value) if value.start_with?(YAML_MARKER)
 
-        types = attributes[attribute.to_s][:types]
         value = MessagePack.unpack(value)
-        value = Time.new(*value) if value && types.first == :timestamp
+        value = Time.new(*value) if value && attributes[attribute.to_s][:type] == :timestamp
         value
       end
     end
@@ -129,25 +128,17 @@ module Modis
 
     private
 
-    TYPE_TO_CLASS_MAP = { string: [String],
-                          integer: [Fixnum],
-                          float: [Float],
-                          timestamp: [Time],
-                          hash: [Hash],
-                          array: [Array],
-                          boolean: [TrueClass, FalseClass] }.freeze
-
     def coerce_for_persistence(value)
-      value = [value.year, value.month, value.day, value.hour, value.min, value.sec, value.strftime("%:z")] if value.kind_of?(Time)
+      value = [value.year, value.month, value.day, value.hour, value.min, value.sec, value.strftime("%:z")] if value.is_a?(Time)
       MessagePack.pack(value)
     end
 
     def ensure_type(attribute, value)
-      types = self.class.attributes[attribute.to_s][:types]
-      type_classes = types.map { |type| TYPE_TO_CLASS_MAP[type] }.flatten
-
-      return unless value && !type_classes.include?(value.class)
-      raise Modis::AttributeCoercionError, "Received value of type '#{value.class}', expected '#{type_classes.join('\', \'')}' for attribute '#{attribute}'."
+      return unless value
+      expected_type = self.class.attributes[attribute.to_s][:type]
+      received_type = Modis::Attribute::TYPES[value.class]
+      return if expected_type.is_a?(Array) ? expected_type.include?(received_type) : expected_type == received_type
+      raise Modis::AttributeCoercionError, "Received value of type #{received_type.inspect}, expected #{Array(expected_type).map(&:inspect).join(', ')} for attribute '#{attribute}'."
     end
 
     def create_or_update(args = {})

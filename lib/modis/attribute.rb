@@ -1,6 +1,13 @@
 module Modis
   module Attribute
-    TYPES = [:string, :integer, :float, :timestamp, :boolean, :array, :hash]
+    TYPES = { String => :string,
+              Fixnum => :integer,
+              Float => :float,
+              Time => :timestamp,
+              Hash => :hash,
+              Array => :array,
+              TrueClass => :boolean,
+              FalseClass => :boolean }.freeze
 
     def self.included(base)
       base.extend ClassMethods
@@ -22,14 +29,13 @@ module Modis
         attribute :id, :integer
       end
 
-      def attribute(name, types, options = {})
+      def attribute(name, type, options = {})
         name = name.to_s
-        types = Array[*types]
         raise AttributeError, "Attribute with name '#{name}' has already been specified." if attributes.key?(name)
-        types.each { |type| raise UnsupportedAttributeType, type unless TYPES.include?(type) }
-
-        attributes[name] = options.update(types: types)
+        Array(type).each { |t| raise UnsupportedAttributeType, t unless TYPES.values.include?(t) }
+        attributes[name] = options.update(type: type)
         define_attribute_methods [name]
+
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
             attributes['#{name}']
