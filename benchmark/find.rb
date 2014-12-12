@@ -21,7 +21,7 @@ user = User.create!(name: 'Test', age: 30, percentage: 50.0, created_at: Time.no
 user_id = user.id
 user_name = user.name
 
-n = 1000
+n = 10_000
 
 Bench.run do |b|
   b.report(:find) do

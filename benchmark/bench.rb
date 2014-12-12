@@ -25,7 +25,7 @@ class Bench
   end
 
   def _run
-    Benchmark.bm do |x|
+    Benchmark.bmbm do |x|
       @bms.each do |name, blk|
         x.report(name) do
           with_profile(name, &blk)
@@ -57,6 +57,6 @@ class Bench
     return unless @profiles.any?
 
     puts "\nProfiler dumps:"
-    @profiles.each { |dump| puts " * " + dump }
+    @profiles.uniq.each { |dump| puts " * stackprof #{dump} --text" }
   end
 end

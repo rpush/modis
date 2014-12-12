@@ -69,7 +69,7 @@ module Modis
 
         types = attributes[attribute.to_s][:types]
         value = MessagePack.unpack(value)
-        value = Time.new(*value) if value && types.include?(:timestamp)
+        value = Time.new(*value) if value && types.first == :timestamp
         value
       end
     end
@@ -137,8 +137,7 @@ module Modis
                           array: [Array],
                           boolean: [TrueClass, FalseClass] }.freeze
 
-    def coerce_for_persistence(attribute, value)
-      ensure_type(attribute, value)
+    def coerce_for_persistence(value)
       value = [value.year, value.month, value.day, value.hour, value.min, value.sec, value.strftime("%:z")] if value.kind_of?(Time)
       MessagePack.pack(value)
     end
@@ -181,7 +180,7 @@ module Modis
           run_callbacks callback do
             run_callbacks "_internal_#{callback}" do
               attrs = []
-              attributes.each { |k, v| attrs << k << coerce_for_persistence(k, v) }
+              attributes.each { |k, v| attrs << k << coerce_for_persistence(v) }
               future = redis.hmset(self.class.key_for(id), attrs)
             end
           end

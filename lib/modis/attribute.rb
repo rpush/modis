@@ -34,8 +34,11 @@ module Modis
           end
 
           def #{name}=(value)
-            ensure_type('#{name}', value)
-            #{name}_will_change! unless value == attributes['#{name}']
+            if value != attributes['#{name}']
+              ensure_type('#{name}', value)
+              #{name}_will_change!
+            end
+
             attributes['#{name}'] = value
           end
         EOS
