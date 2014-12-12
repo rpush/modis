@@ -11,6 +11,8 @@ module Modis
 
     module ClassMethods
       def bootstrap_attributes
+        attr_reader :attributes
+
         class << self
           attr_accessor :attributes
         end
@@ -43,10 +45,6 @@ module Modis
           end
         EOS
       end
-    end
-
-    def attributes
-      @attributes ||= Hash[self.class.attributes.keys.zip]
     end
 
     def assign_attributes(hash)

@@ -31,6 +31,7 @@ module Modis
     end
 
     def initialize(record = nil, options = {})
+      @attributes = {}
       set_sti_type
       apply_defaults
       assign_attributes(record.symbolize_keys) if record
