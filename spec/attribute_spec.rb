@@ -93,12 +93,14 @@ describe Modis::Attribute do
 
   describe ':timestamp type' do
     it 'is coerced' do
-      now = Time.now
+      str_time = '2014-12-11 17:31:50 -0200'
+      now = Time.parse(str_time)
       model.created_at = now
       model.save!
       found = AttributeSpec::MockModel.find(model.id)
       expect(found.created_at).to be_kind_of(Time)
-      expect(found.created_at.to_s).to eq(now.to_s)
+      expect(found.created_at.to_s).to eq(str_time)
+
     end
   end
 

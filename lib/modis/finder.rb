@@ -47,7 +47,7 @@ module Modis
       end
 
       def record_to_attributes(record)
-        record.each { |k, v| record[k] = coerce_from_persistence(v) }
+        record.each { |k, v| record[k] = coerce_from_persistence(k, v) }
         record
       end
 

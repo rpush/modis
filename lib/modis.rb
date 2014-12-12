@@ -3,6 +3,7 @@ require 'connection_pool'
 require 'active_model'
 require 'active_support/all'
 require 'yaml'
+require 'msgpack'
 
 require 'modis/version'
 require 'modis/configuration'
@@ -22,7 +23,7 @@ module Modis
                   :connection_pool_timeout
   end
 
-  self.redis_options = {}
+  self.redis_options = { driver: :hiredis }
   self.connection_pool_size = 5
   self.connection_pool_timeout = 5
 

@@ -263,4 +263,26 @@ describe Modis::Persistence do
       expect(model.update_attributes(name: nil)).to be false
     end
   end
+
+  describe 'YAML backward compatability' do
+    it 'loads a YAML serialized value' do
+      Modis.with_connection do |redis|
+        model.save!
+        key = model.class.key_for(model.id)
+        record = redis.hgetall(key)
+        record['name'] = YAML.dump('Ian')
+        redis.hmset(key, *record.to_a)
+        record = redis.hgetall(key)
+
+        expect(record["name"]).to eq("--- Ian\n...\n")
+
+        model.reload
+        expect(model.name).to eq('Ian')
+
+        model.save!
+        record = redis.hgetall(key)
+        expect(record["name"]).to eq("\xA3Ian")
+      end
+    end
+  end
 end

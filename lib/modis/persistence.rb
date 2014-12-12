@@ -62,8 +62,15 @@ module Modis
         model
       end
 
-      def coerce_from_persistence(value)
-        YAML.load(value)
+      YAML_MARKER = '---'.freeze
+      def coerce_from_persistence(attribute, value)
+        # Modis < 1.3.0 used YAML for serialization.
+        return YAML.load(value) if value.start_with?(YAML_MARKER)
+
+        types = attributes[attribute.to_s][:types]
+        value = MessagePack.unpack(value)
+        value = Time.new(*value) if value && types.include?(:timestamp)
+        value
       end
     end
 
@@ -132,7 +139,8 @@ module Modis
 
     def coerce_for_persistence(attribute, value)
       ensure_type(attribute, value)
-      YAML.dump(value)
+      value = [value.year, value.month, value.day, value.hour, value.min, value.sec, value.strftime("%:z")] if value.kind_of?(Time)
+      MessagePack.pack(value)
     end
 
     def ensure_type(attribute, value)
