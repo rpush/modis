@@ -72,19 +72,17 @@ module Modis
 
     def set_sti_type
       return unless self.class.sti_child?
-      assign_attributes(type: self.class.name)
+      write_attribute(:type, self.class.name)
     end
 
     def reset_changes
-      @changed_attributes.clear if @changed_attributes
+      @changed_attributes = nil
     end
 
     def apply_defaults
-      defaults = {}
       self.class.attributes.each do |attribute, options|
-        defaults[attribute] = options[:default] if options[:default]
+        write_attribute(attribute, options[:default]) if options[:default]
       end
-      assign_attributes(defaults)
     end
   end
 end

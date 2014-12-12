@@ -29,8 +29,8 @@ module Modis
       end
 
       # :nodoc:
-      def sti_child?
-        @sti_child == true
+      def sti_child? # rubocop:disable Style/TrivialAccessors
+        @sti_child
       end
 
       def namespace
