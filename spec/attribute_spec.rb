@@ -93,14 +93,12 @@ describe Modis::Attribute do
 
   describe ':timestamp type' do
     it 'is coerced' do
-      str_time = '2014-12-11 17:31:50 -0200'
-      now = Time.parse(str_time)
-      model.created_at = now
+      time = Time.new(2014, 12, 11, 17, 31, 50, '-02:00')
+      model.created_at = time
       model.save!
       found = AttributeSpec::MockModel.find(model.id)
       expect(found.created_at).to be_kind_of(Time)
-      expect(found.created_at.to_s).to eq(str_time)
-
+      expect(found.created_at.to_s).to eq(time.to_s)
     end
   end
 
@@ -146,7 +144,7 @@ describe Modis::Attribute do
       model.hash = { foo: :bar }
       model.save!
       found = AttributeSpec::MockModel.find(model.id)
-      expect(found.hash).to eq(foo: :bar)
+      expect(found.hash).to eq('foo' => 'bar')
     end
 
     it 'raises an error when assigned another type' do
@@ -159,7 +157,7 @@ describe Modis::Attribute do
       model.string_or_hash = { foo: :bar }
       model.save!
       found = AttributeSpec::MockModel.find(model.id)
-      expect(found.string_or_hash).to eq(foo: :bar)
+      expect(found.string_or_hash).to eq('foo' => 'bar')
 
       model.string_or_hash = 'test'
       model.save!

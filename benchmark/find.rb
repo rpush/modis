@@ -18,7 +18,7 @@ end
 
 def create_user
   User.create!(name: 'Test', age: 30, percentage: 50.0, created_at: Time.now,
-  flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
+               flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
 end
 
 user = create_user
