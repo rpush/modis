@@ -4,7 +4,7 @@ require 'benchmark/bench'
 class User
   include Modis::Model
 
-  attribute :name, :string
+  attribute :name, :string, default: 'Test'
   attribute :age, :integer
   attribute :percentage, :float
   attribute :created_at, :timestamp
@@ -16,13 +16,17 @@ class User
   index :name
 end
 
+def create_user
+  User.create!(name: 'Test', age: 30, percentage: 50.0, created_at: Time.now,
+               flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
+end
+
 n = 10_000
 
 Bench.run do |b|
   b.report(:create) do
     n.times do
-      User.create!(name: 'Test', age: 30, percentage: 50.0, created_at: Time.now,
-                   flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
+      create_user
     end
   end
 
@@ -45,6 +49,27 @@ Bench.run do |b|
     n.times do
       User.new(name: 'Test', age: 30, percentage: 50.0, created_at: Time.now,
                flag: true, array: [1, 2, 3], hash: { k: :v }, string_or_hash: "an string")
+    end
+  end
+
+  b.report(:update_without_changes) do
+    user = create_user
+    n.times do
+      user.update_attributes!(name: user.name, age: user.age)
+    end
+  end
+
+  b.report(:update_with_changes) do
+    user = create_user
+    n.times do |i|
+      user.update_attribute(:name, i.to_s)
+    end
+  end
+
+  b.report(:reload) do
+    user = create_user
+    n.times do
+      user.reload
     end
   end
 end

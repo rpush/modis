@@ -145,7 +145,7 @@ module Modis
       validate(args)
       future = persist
 
-      if future && future.value == 'OK'
+      if future && (future == :unchanged || future.value == 'OK')
         reset_changes
         @new_record = false
         new_record? ? add_to_index : update_index
@@ -170,15 +170,32 @@ module Modis
         run_callbacks :save do
           run_callbacks callback do
             run_callbacks "_internal_#{callback}" do
-              attrs = []
-              attributes.each { |k, v| attrs << k << coerce_for_persistence(v) }
-              future = redis.hmset(self.class.key_for(id), attrs)
+              attrs = coerced_attributes
+              future = attrs.any? ? redis.hmset(self.class.key_for(id), attrs) : :unchanged
             end
           end
         end
       end
 
       future
+    end
+
+    def coerced_attributes # rubocop:disable Metrics/AbcSize
+      attrs = []
+
+      if new_record?
+        attributes.each do |k, v|
+          if (self.class.attributes[k][:default] || nil) != v
+            attrs << k << coerce_for_persistence(v)
+          end
+        end
+      else
+        changed_attributes.each do |k, _|
+          attrs << k << coerce_for_persistence(attributes[k])
+        end
+      end
+
+      attrs
     end
 
     def set_id
