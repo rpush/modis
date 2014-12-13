@@ -1,9 +1,12 @@
 sudo: false
 services:
-  - redis-server
+- redis-server
 language: ruby
 rvm:
-  - 2.0.0
-  - 2.1.5
-  - jruby-1.7.17
-  - rbx-2.4.1
+- 2.0.0
+- 2.1.5
+- jruby-1.7.17
+- rbx-2.4.1
+env:
+  global:
+    secure: LrTz0Pq2ibNZuKDhdzcrvEUSNxUpPopEq9aJeCxy3UpV0v4vpHBtWV0S6zofvf98g/RkZ6cGI1u+0H578dHgE6pWTo+iR8LAwqPKofrFIWRkeo+M77Vs5swahb3mQyPOcig1hfVWDm25MsojePYm70eBIcBU55NWImtdePXfiU0=

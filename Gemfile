@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'rspec'
 gem 'simplecov'
-gem 'coveralls'
 
-platform :mri_19, :mri_20, :mri_21 do
+platform :mri do
+  gem 'codeclimate-test-reporter', require: nil
   gem 'cane'
   gem 'rubocop'
   gem 'stackprof'

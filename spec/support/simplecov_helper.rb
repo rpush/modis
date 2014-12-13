@@ -7,13 +7,17 @@ module SimpleCovHelper
       add_filter '/spec/'
       command_name name
 
+      formatters = [SimpleCov::Formatter::QualityFormatter]
+
       if ENV['TRAVIS']
-        require 'coveralls'
-        formatter SimpleCov::Formatter::MultiFormatter[SimpleCov::Formatter::QualityFormatter,
-                                                       Coveralls::SimpleCov::Formatter]
-      else
-        formatter SimpleCov::Formatter::QualityFormatter
+        require 'codeclimate-test-reporter'
+
+        if CodeClimate::TestReporter.run?
+          formatters << CodeClimate::TestReporter::Formatter
+        end
       end
+
+      formatter SimpleCov::Formatter::MultiFormatter[*formatters]
     end
   end
 end
