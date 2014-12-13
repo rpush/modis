@@ -8,6 +8,9 @@ platform :mri do
   gem 'codeclimate-test-reporter', require: nil
   gem 'cane'
   gem 'rubocop'
+end
+
+platform :mri_21 do
   gem 'stackprof'
 end
 
