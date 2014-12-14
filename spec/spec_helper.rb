@@ -1,6 +1,3 @@
-require 'bundler/setup'
-Bundler.require(:default)
-
 begin
   require './spec/support/simplecov_helper'
   include SimpleCovHelper

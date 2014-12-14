@@ -97,7 +97,12 @@ describe Modis::Persistence do
     expect(model.persisted?).to be true
   end
 
-  it 'does not track the ID if the underlying Redis command failed'
+  it 'does not track the ID if the underlying Redis command failed' do
+    redis = double(hmset: double(value: nil))
+    expect(model.class).to receive(:transaction).and_yield(redis)
+    model.save
+    expect { model.class.find(model.id) }.to raise_error(Modis::RecordNotFound)
+  end
 
   it 'does not perform validation if validate: false' do
     model.name = nil
@@ -110,7 +115,17 @@ describe Modis::Persistence do
   end
 
   describe 'an existing record' do
-    it 'only updates dirty attributes'
+    it 'only updates dirty attributes' do
+      model.name = 'Ian'
+      model.age = 10
+      model.save!
+      model.age = 11
+      redis = double
+      expect(redis).to receive(:hmset).with("modis:persistence_spec:mock_model:1", ["age", "\v"]).and_return(double(value: 'OK'))
+      expect(model.class).to receive(:transaction).and_yield(redis)
+      model.save!
+      expect(model.age).to eq(11)
+    end
   end
 
   describe 'reload' do
@@ -183,11 +198,19 @@ describe Modis::Persistence do
     end
 
     describe 'a valid model' do
-      it 'returns the created model'
+      it 'returns the created model' do
+        model = PersistenceSpec::MockModel.create(name: 'Ian')
+        expect(model.valid?).to be true
+        expect(model.new_record?).to be false
+      end
     end
 
     describe 'an invalid model' do
-      it 'returns the unsaved model'
+      it 'returns the unsaved model' do
+        model = PersistenceSpec::MockModel.create(name: nil)
+        expect(model.valid?).to be false
+        expect(model.new_record?).to be true
+      end
     end
   end
 
