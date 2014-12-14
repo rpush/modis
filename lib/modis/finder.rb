@@ -5,27 +5,34 @@ module Modis
     end
 
     module ClassMethods
-      def find(id)
-        Modis.with_connection do |redis|
-          attributes = attributes_for(redis, id)
-          model_for(attributes)
-        end
-      end
+      def find(*ids)
+        raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
 
-      def all
-        records = []
-
-        Modis.with_connection do |redis|
-          ids = redis.smembers(key_for(:all))
-          records = redis.pipelined do
+        records = Modis.with_connection do |redis|
+          redis.pipelined do
             ids.map { |id| record_for(redis, id) }
           end
         end
 
-        records.map do |record|
-          attributes = record_to_attributes(record)
-          model_for(attributes)
+        models = records_to_models(records)
+
+        if models.count < ids.count
+          missing = ids - models.map(&:id)
+          raise RecordNotFound, "Couldn't find #{name} with id=#{missing.first}"
         end
+
+        ids.count == 1 ? models.first : models
+      end
+
+      def all
+        records = Modis.with_connection do |redis|
+          ids = redis.smembers(key_for(:all))
+          redis.pipelined do
+            ids.map { |id| record_for(redis, id) }
+          end
+        end
+
+        records_to_models(records)
       end
 
       def attributes_for(redis, id)
@@ -41,6 +48,19 @@ module Modis
       end
 
       private
+
+      def records_to_models(records)
+        models = []
+
+        records.each do |record|
+          unless record.blank?
+            attributes = record_to_attributes(record)
+            models << model_for(attributes)
+          end
+        end
+
+        models
+      end
 
       def model_for(attributes)
         model_class(attributes).new(attributes, new_record: false)

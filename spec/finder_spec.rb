@@ -26,9 +26,21 @@ describe Modis::Finder do
     expect(found.age).to eq(model.age)
   end
 
-  it 'raises an error if the record could not be found' do
+  it 'finds multiple by ID' do
+    model1 = FindersSpec::User.create!(name: 'Ian', age: 28)
+    model2 = FindersSpec::User.create!(name: 'Tanya', age: 32)
+    model3 = FindersSpec::User.create!(name: 'Kyle', age: 35)
+    models = FindersSpec::User.find(model1.id, model2.id, model3.id)
+    expect(models).to eq([model1, model2, model3])
+  end
+
+  it 'raises an error a record could not be found' do
     expect do
       FindersSpec::User.find(model.id + 1)
+    end.to raise_error(Modis::RecordNotFound, "Couldn't find FindersSpec::User with id=#{model.id + 1}")
+
+    expect do
+      FindersSpec::User.find(model.id, model.id + 1)
     end.to raise_error(Modis::RecordNotFound, "Couldn't find FindersSpec::User with id=#{model.id + 1}")
   end
 
