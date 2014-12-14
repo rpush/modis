@@ -6,21 +6,7 @@ module Modis
 
     module ClassMethods
       def find(*ids)
-        raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
-
-        records = Modis.with_connection do |redis|
-          redis.pipelined do
-            ids.map { |id| record_for(redis, id) }
-          end
-        end
-
-        models = records_to_models(records)
-
-        if models.count < ids.count
-          missing = ids - models.map(&:id)
-          raise RecordNotFound, "Couldn't find #{name} with id=#{missing.first}"
-        end
-
+        models = find_all(ids)
         ids.count == 1 ? models.first : models
       end
 
@@ -45,6 +31,25 @@ module Modis
         end
 
         attributes
+      end
+
+      def find_all(ids)
+        raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
+
+        records = Modis.with_connection do |redis|
+          redis.pipelined do
+            ids.map { |id| record_for(redis, id) }
+          end
+        end
+
+        models = records_to_models(records)
+
+        if models.count < ids.count
+          missing = ids - models.map(&:id)
+          raise RecordNotFound, "Couldn't find #{name} with id=#{missing.first}"
+        end
+
+        models
       end
 
       private

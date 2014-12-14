@@ -28,8 +28,9 @@ module Modis
       def where(query)
         raise IndexError, 'Queries using multiple indexes is not currently supported.' if query.keys.size > 1
         attribute, value = query.first
-        index = index_for(attribute, value)
-        index.map { |id| find(id) }
+        ids = index_for(attribute, value)
+        return [] if ids.empty?
+        find_all(ids)
       end
 
       def index_for(attribute, value)
