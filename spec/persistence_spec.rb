@@ -302,10 +302,9 @@ describe Modis::Persistence do
         model.reload
         expect(model.name).to eq('Ian')
 
-        model.name = 'Kyle'
         model.save!
         record = redis.hgetall(key)
-        expect(record["name"]).to eq("\xA4Kyle")
+        expect(record["name"]).to eq("\xA4Ian")
       end
     end
   end

@@ -3,10 +3,12 @@ module Modis
     yield config
   end
 
-  def self.config
-    @config ||= Configuration.new
-  end
-
   class Configuration < Struct.new(:namespace)
   end
+
+  class << self
+    attr_reader :config
+  end
+
+  @config = Configuration.new
 end

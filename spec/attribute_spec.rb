@@ -122,7 +122,7 @@ describe Modis::Attribute do
     end
 
     it 'raises an error if assigned a non-boolean value' do
-      expect { model.flag = 'unf!' }.to raise_error(Modis::AttributeCoercionError, "Received value of type :string, expected :boolean for attribute 'flag'.")
+      expect { model.flag = 'unf!' }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'String', expected 'TrueClass', 'FalseClass' for attribute 'flag'.")
     end
   end
 
@@ -135,7 +135,7 @@ describe Modis::Attribute do
     end
 
     it 'raises an error when assigned another type' do
-      expect { model.array = { foo: :bar } }.to raise_error(Modis::AttributeCoercionError, "Received value of type :hash, expected :array for attribute 'array'.")
+      expect { model.array = { foo: :bar } }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'Hash', expected 'Array' for attribute 'array'.")
     end
   end
 
@@ -148,7 +148,7 @@ describe Modis::Attribute do
     end
 
     it 'raises an error when assigned another type' do
-      expect { model.hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type :array, expected :hash for attribute 'hash'.")
+      expect { model.hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'Array', expected 'Hash' for attribute 'hash'.")
     end
   end
 
@@ -166,7 +166,7 @@ describe Modis::Attribute do
     end
 
     it 'raises an error when assigned another type' do
-      expect { model.string_or_hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type :array, expected :string, :hash for attribute 'string_or_hash'.")
+      expect { model.string_or_hash = [] }.to raise_error(Modis::AttributeCoercionError, "Received value of type 'Array', expected 'String', 'Hash' for attribute 'string_or_hash'.")
     end
   end
 end

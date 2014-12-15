@@ -3,6 +3,10 @@ module Modis
     def self.included(base)
       base.extend ClassMethods
       base.instance_eval do
+        class << self
+          attr_reader :sti_child
+          alias_method :sti_child?, :sti_child
+        end
         after__internal_create :track
         before__internal_destroy :untrack
       end
@@ -28,22 +32,19 @@ module Modis
         end
       end
 
-      # :nodoc:
-      def sti_child? # rubocop:disable Style/TrivialAccessors
-        @sti_child
-      end
-
       def namespace
         return sti_parent.namespace if sti_child?
-        return @namespace if @namespace
-        @namespace = name.split('::').map(&:underscore).join(':')
+        @namespace ||= name.split('::').map(&:underscore).join(':')
       end
 
-      attr_writer :namespace
+      def namespace=(value)
+        @namespace = value
+        @absolute_namespace = nil
+      end
 
       def absolute_namespace
         parts = [Modis.config.namespace, namespace]
-        @absolute_namespace = parts.compact.join(':')
+        @absolute_namespace ||= parts.compact.join(':')
       end
 
       def key_for(id)
@@ -62,14 +63,34 @@ module Modis
         model
       end
 
-      YAML_MARKER = '---'.freeze
-      def coerce_from_persistence(attribute, value)
-        # Modis < 1.4.0 used YAML for serialization.
-        return YAML.load(value) if value.start_with?(YAML_MARKER)
+      # YAML_MARKER = '---'.freeze
+      # def coerce_from_persistence(attribute, value)
+      #   # Modis < 1.4.0 used YAML for serialization.
+      #   return YAML.load(value) if value.start_with?(YAML_MARKER)
+      #
+      #   value = MessagePack.unpack(value)
+      #   value = Time.new(*value) if value && attributes[attribute.to_s][:type] == :timestamp
+      #   value
+      # end
 
-        value = MessagePack.unpack(value)
-        value = Time.new(*value) if value && attributes[attribute.to_s][:type] == :timestamp
-        value
+      def deserialize(record)
+        values = record.values
+        values = MessagePack.unpack(msgpack_array_header(values.size) + values.join)
+        keys = record.keys
+        values.each_with_index { |v, i| record[keys[i]] = v }
+        record
+      end
+
+      private
+
+      def msgpack_array_header(n)
+        if n < 16
+          [0x90 | n].pack("C")
+        elsif n < 65536
+          [0xDC, n].pack("Cn")
+        else
+          [0xDD, n].pack("CN")
+        end.force_encoding(Encoding::UTF_8)
       end
     end
 
@@ -131,14 +152,6 @@ module Modis
     def coerce_for_persistence(value)
       value = [value.year, value.month, value.day, value.hour, value.min, value.sec, value.strftime("%:z")] if value.is_a?(Time)
       MessagePack.pack(value)
-    end
-
-    def ensure_type(attribute, value)
-      return unless value
-      expected_type = self.class.attributes[attribute.to_s][:type]
-      received_type = Modis::Attribute::TYPES[value.class]
-      return if expected_type.is_a?(Array) ? expected_type.include?(received_type) : expected_type == received_type
-      raise Modis::AttributeCoercionError, "Received value of type #{received_type.inspect}, expected #{Array(expected_type).map(&:inspect).join(', ')} for attribute '#{attribute}'."
     end
 
     def create_or_update(args = {})

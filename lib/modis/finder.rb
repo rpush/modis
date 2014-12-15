@@ -24,7 +24,7 @@ module Modis
       def attributes_for(redis, id)
         raise RecordNotFound, "Couldn't find #{name} without an ID" if id.nil?
 
-        attributes = record_to_attributes(record_for(redis, id))
+        attributes = deserialize(record_for(redis, id))
 
         unless attributes['id'].present?
           raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
@@ -37,9 +37,8 @@ module Modis
         raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
 
         records = Modis.with_connection do |redis|
-          redis.pipelined do
-            ids.map { |id| record_for(redis, id) }
-          end
+          blk = -> (id){ record_for(redis, id) }
+          ids.count == 1 ? ids.map(&blk) : redis.pipelined { ids.map(&blk) }
         end
 
         models = records_to_models(records)
@@ -55,25 +54,13 @@ module Modis
       private
 
       def records_to_models(records)
-        models = []
-
-        records.each do |record|
-          unless record.blank?
-            attributes = record_to_attributes(record)
-            models << model_for(attributes)
-          end
-        end
-
-        models
+        records.map do |record|
+          model_for(deserialize(record)) unless record.blank?
+        end.compact
       end
 
       def model_for(attributes)
         model_class(attributes).new(attributes, new_record: false)
-      end
-
-      def record_to_attributes(record)
-        record.each { |k, v| record[k] = coerce_from_persistence(k, v) }
-        record
       end
 
       def record_for(redis, id)

@@ -39,6 +39,7 @@ Bench.run do |b|
   end
 end
 
+n = 1_000
 i = 20
 STDOUT.write "\n* Creating #{i} users for :where_multiple... "
 STDOUT.flush

@@ -1,13 +1,12 @@
 module Modis
   module Attribute
-    TYPES = { String => :string,
-              Fixnum => :integer,
-              Float => :float,
-              Time => :timestamp,
-              Hash => :hash,
-              Array => :array,
-              TrueClass => :boolean,
-              FalseClass => :boolean }.freeze
+    TYPES = { :string => [String],
+              :integer => [Fixnum],
+              :float => [Float],
+              :timestamp => [Time],
+              :hash => [Hash],
+              :array => [Array],
+              :boolean => [TrueClass, FalseClass]}.freeze
 
     def self.included(base)
       base.extend ClassMethods
@@ -32,24 +31,41 @@ module Modis
       def attribute(name, type, options = {})
         name = name.to_s
         raise AttributeError, "Attribute with name '#{name}' has already been specified." if attributes.key?(name)
-        Array(type).each { |t| raise UnsupportedAttributeType, t unless TYPES.values.include?(t) }
+
+        type_classes = Array(type).map do |t|
+          raise UnsupportedAttributeType, t unless TYPES.key?(t)
+          TYPES[t]
+        end.flatten
+
         attributes[name] = options.update(type: type)
         define_attribute_methods [name]
 
-        class_eval <<-EOS, __FILE__, __LINE__
+        type_check = ''
+
+        if type == :timestamp
+          type_check += <<-RUBY
+            value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7
+          RUBY
+        end
+
+        predicate = type_classes.map { |cls| "value.is_a?(#{cls.name})" }.join(' || ')
+        type_check += <<-RUBY
+        if value && !(#{predicate})
+          raise Modis::AttributeCoercionError, "Received value of type '\#{value.class}', expected '#{type_classes.join("', '")}' for attribute '#{name}'."
+        end
+        RUBY
+
+        class_eval <<-RUBY, __FILE__, __LINE__
           def #{name}
             attributes['#{name}']
           end
 
           def #{name}=(value)
-            if value != attributes['#{name}']
-              ensure_type('#{name}', value)
-              #{name}_will_change!
-            end
-
+            #{type_check}
+            #{name}_will_change! if value != attributes['#{name}']
             attributes['#{name}'] = value
           end
-        EOS
+        RUBY
       end
     end
 
