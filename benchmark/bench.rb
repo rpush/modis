@@ -1,8 +1,10 @@
 require 'stackprof'
 require 'benchmark'
+
+$LOAD_PATH.unshift('.')
 require 'lib/modis'
 
-puts "Profiler enabled.\n\n" if ENV['PROFILE']
+puts "Profiler enabled." if ENV['PROFILE']
 
 Modis.configure do |config|
   config.namespace = 'modis_benchmark'
