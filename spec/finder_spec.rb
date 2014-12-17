@@ -7,12 +7,15 @@ module FindersSpec
 
     attribute :name, :string
     attribute :age, :integer
+    attribute :parent_default, :string, default: 'omg'
   end
 
   class Consumer < User
+    attribute :consumed, :boolean
   end
 
   class Producer < User
+    attribute :child_default, :string, default: 'derp'
   end
 end
 
@@ -90,6 +93,17 @@ describe Modis::Finder do
       expect(FindersSpec::User.find(ian.id)).to be_kind_of(FindersSpec::User)
       expect(FindersSpec::User.find(kyle.id)).to be_kind_of(FindersSpec::Consumer)
       expect(FindersSpec::User.find(tanya.id)).to be_kind_of(FindersSpec::Producer)
+    end
+
+    it 'inherits attributes from the parent' do
+      consumer = FindersSpec::Consumer.create!(name: 'Kyle', consumed: true)
+      expect(consumer.attributes.keys.sort).to eq(["consumed", "id", "name", "type"])
+    end
+
+    it 'inherits default attribute values from the parent' do
+      producer = FindersSpec::Producer.create!(name: 'Kyle')
+      expect(producer.parent_default).to eq('omg')
+      expect(producer.child_default).to eq('derp')
     end
   end
 end

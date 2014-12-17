@@ -31,10 +31,9 @@ module Modis
     end
 
     def initialize(record = nil, options = {})
-      @attributes = {}
-      set_sti_type
       apply_defaults
-      assign_attributes(record.symbolize_keys) if record
+      set_sti_type
+      assign_attributes(record) if record
       reset_changes
 
       return unless options.key?(:new_record)

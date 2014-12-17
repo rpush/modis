@@ -21,9 +21,11 @@ module Modis
 
         class << self
           attr_accessor :attributes
+          attr_reader :attributes_with_defaults
         end
 
         self.attributes = {}
+        @attributes_with_defaults = {}
 
         attribute :id, :integer
       end
@@ -38,18 +40,15 @@ module Modis
         end.flatten
 
         attributes[name] = options.update(type: type)
-        define_attribute_methods [name]
+        attributes_with_defaults[name] = options[:default] if options[:default]
+        define_attribute_methods([name])
 
-        type_check = ''
-
-        if type == :timestamp
-          type_check += <<-RUBY
-            value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7
-          RUBY
+        value_coercion = if type == :timestamp
+          'value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7'
         end
 
         predicate = type_classes.map { |cls| "value.is_a?(#{cls.name})" }.join(' || ')
-        type_check += <<-RUBY
+        type_check = <<-RUBY
         if value && !(#{predicate})
           raise Modis::AttributeCoercionError, "Received value of type '\#{value.class}', expected '#{type_classes.join("', '")}' for attribute '#{name}'."
         end
@@ -61,9 +60,14 @@ module Modis
           end
 
           def #{name}=(value)
-            #{type_check}
-            #{name}_will_change! if value != attributes['#{name}']
-            attributes['#{name}'] = value
+            #{value_coercion}
+
+            # ActiveSupport's Time#<=> does not perform well when comparing with NilClass.
+            if (value.nil? ^ attributes['#{name}'].nil?) || (value != attributes['#{name}'])
+              #{type_check}
+              #{name}_will_change!
+              attributes['#{name}'] = value
+            end
           end
         RUBY
       end
@@ -72,7 +76,7 @@ module Modis
     def assign_attributes(hash)
       hash.each do |k, v|
         setter = "#{k}="
-        send(setter, v) if respond_to?(setter)
+        send(setter, v) if self.class.attributes.key?(k.to_s)
       end
     end
 
@@ -96,9 +100,7 @@ module Modis
     end
 
     def apply_defaults
-      self.class.attributes.each do |attribute, options|
-        write_attribute(attribute, options[:default]) if options[:default]
-      end
+      @attributes = Hash[self.class.attributes_with_defaults]
     end
   end
 end

@@ -24,7 +24,7 @@ module Modis
           end
 
           class << self
-            delegate :attributes, :indexed_attributes, to: :sti_parent
+            delegate :attributes, :attributes_with_defaults, :indexed_attributes, to: :sti_parent
           end
 
           @sti_child = true
