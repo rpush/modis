@@ -1,9 +1,9 @@
 require 'fileutils'
-require 'redis/connection/ruby'
+require 'redis/connection/hiredis'
 
 class Redis
   module Connection
-    class Fakedis < ::Redis::Connection::Ruby
+    class Fakedis < ::Redis::Connection::Hiredis
       class << self
         attr_accessor :reads, :read_indicies, :replaying, :recording
         alias_method :replaying?, :replaying
