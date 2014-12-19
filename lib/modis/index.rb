@@ -4,9 +4,6 @@ module Modis
       base.extend ClassMethods
       base.instance_eval do
         bootstrap_indexes
-        after__internal_create :add_to_index
-        after__internal_update :update_index
-        before__internal_destroy :remove_from_index
       end
     end
 
@@ -55,38 +52,32 @@ module Modis
       self.class.index_key(attribute, value)
     end
 
-    def add_to_index
+    def add_to_indexes(redis)
       return if indexed_attributes.empty?
 
-      Modis.with_connection do |redis|
-        indexed_attributes.each do |attribute|
-          key = index_key(attribute, read_attribute(attribute))
-          redis.sadd(key, id)
-        end
+      indexed_attributes.each do |attribute|
+        key = index_key(attribute, read_attribute(attribute))
+        redis.sadd(key, id)
       end
     end
 
-    def remove_from_index
+    def remove_from_indexes(redis)
       return if indexed_attributes.empty?
 
-      Modis.with_connection do |redis|
-        indexed_attributes.each do |attribute|
-          key = index_key(attribute, read_attribute(attribute))
-          redis.srem(key, id)
-        end
+      indexed_attributes.each do |attribute|
+        key = index_key(attribute, read_attribute(attribute))
+        redis.srem(key, id)
       end
     end
 
-    def update_index
+    def update_indexes(redis)
       return if indexed_attributes.empty?
 
-      Modis.with_connection do |redis|
-        (changes.keys & indexed_attributes).each do |attribute|
-          old_value, new_value = changes[attribute]
-          old_key = index_key(attribute, old_value)
-          new_key = index_key(attribute, new_value)
-          redis.smove(old_key, new_key, id)
-        end
+      (changes.keys & indexed_attributes).each do |attribute|
+        old_value, new_value = changes[attribute]
+        old_key = index_key(attribute, old_value)
+        new_key = index_key(attribute, new_value)
+        redis.smove(old_key, new_key, id)
       end
     end
   end

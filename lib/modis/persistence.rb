@@ -7,8 +7,6 @@ module Modis
           attr_reader :sti_child
           alias_method :sti_child?, :sti_child
         end
-        after__internal_create :track
-        before__internal_destroy :untrack
       end
     end
 
@@ -119,7 +117,9 @@ module Modis
     def destroy
       self.class.transaction do |redis|
         run_callbacks :destroy do
-          run_callbacks :_internal_destroy do
+          redis.pipelined do
+            remove_from_indexes(redis)
+            redis.srem(self.class.key_for(:all), id)
             redis.del(key)
           end
         end
@@ -161,7 +161,6 @@ module Modis
       if future && (future == :unchanged || future.value == 'OK')
         reset_changes
         @new_record = false
-        new_record? ? add_to_index : update_index
         true
       else
         false
@@ -182,9 +181,16 @@ module Modis
       self.class.transaction do |redis|
         run_callbacks :save do
           run_callbacks callback do
-            run_callbacks "_internal_#{callback}" do
+            redis.pipelined do
               attrs = coerced_attributes
               future = attrs.any? ? redis.hmset(self.class.key_for(id), attrs) : :unchanged
+
+              if new_record?
+                redis.sadd(self.class.key_for(:all), id)
+                add_to_indexes(redis)
+              else
+                update_indexes(redis)
+              end
             end
           end
         end
@@ -215,14 +221,6 @@ module Modis
       Modis.with_connection do |redis|
         self.id = redis.incr("#{self.class.absolute_namespace}_id_seq")
       end
-    end
-
-    def track
-      Modis.with_connection { |redis| redis.sadd(self.class.key_for(:all), id) }
-    end
-
-    def untrack
-      Modis.with_connection { |redis| redis.srem(self.class.key_for(:all), id) }
     end
   end
 end

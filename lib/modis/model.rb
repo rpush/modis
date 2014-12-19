@@ -10,7 +10,6 @@ module Modis
         extend ActiveModel::Callbacks
 
         define_model_callbacks :save, :create, :update, :destroy
-        define_model_callbacks :_internal_create, :_internal_update, :_internal_destroy
 
         include Modis::Errors
         include Modis::Transaction
