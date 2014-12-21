@@ -40,8 +40,7 @@ module Modis
       end
 
       def absolute_namespace
-        parts = [Modis.config.namespace, namespace]
-        @absolute_namespace ||= parts.compact.join(':')
+        @absolute_namespace ||= [Modis.config.namespace, namespace].compact.join(':')
       end
 
       def key_for(id)
