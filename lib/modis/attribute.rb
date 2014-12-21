@@ -16,18 +16,17 @@ module Modis
     end
 
     module ClassMethods
-      def bootstrap_attributes
+      def bootstrap_attributes(parent = nil)
         attr_reader :attributes
 
         class << self
-          attr_accessor :attributes
-          attr_reader :attributes_with_defaults
+          attr_accessor :attributes, :attributes_with_defaults
         end
 
-        self.attributes = {}
-        @attributes_with_defaults = {}
+        self.attributes = parent ? parent.attributes.dup : {}
+        self.attributes_with_defaults = parent ? parent.attributes_with_defaults.dup : {}
 
-        attribute :id, :integer
+        attribute :id, :integer unless parent
       end
 
       def attribute(name, type, options = {})

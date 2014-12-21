@@ -97,7 +97,7 @@ describe Modis::Finder do
 
     it 'inherits attributes from the parent' do
       consumer = FindersSpec::Consumer.create!(name: 'Kyle', consumed: true)
-      expect(consumer.attributes.keys.sort).to eq(["consumed", "id", "name", "type"])
+      expect(consumer.attributes.keys.sort).to eq(['consumed', 'id', 'name', 'parent_default', 'type'])
     end
 
     it 'inherits default attribute values from the parent' do

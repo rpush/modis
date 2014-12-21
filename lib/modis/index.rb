@@ -8,12 +8,12 @@ module Modis
     end
 
     module ClassMethods
-      def bootstrap_indexes
+      def bootstrap_indexes(parent = nil)
         class << self
           attr_accessor :indexed_attributes
         end
 
-        self.indexed_attributes = []
+        self.indexed_attributes = parent ? parent.indexed_attributes.dup : []
       end
 
       def index(attribute)

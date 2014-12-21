@@ -21,12 +21,11 @@ module Modis
             attribute :type, :string unless attributes.key?('type')
           end
 
-          class << self
-            delegate :attributes, :attributes_with_defaults, :indexed_attributes, to: :sti_parent
-          end
-
           @sti_child = true
           @sti_parent = parent
+
+          bootstrap_attributes(parent)
+          bootstrap_indexes(parent)
         end
       end
 
