@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 require 'fileutils'
 require 'redis/connection/hiredis'
 

@@ -23,5 +23,8 @@ CyclomaticComplexity:
 Style/SignalException:
   EnforcedStyle: only_raise
 
+Style/NumericLiterals:
+  Enabled: false
+
 Metrics/AbcSize:
-  Max: 20
+  Max: 25

@@ -70,11 +70,11 @@ module Modis
         found_yaml = false
 
         record.each do |k, v|
-          record[k] = if v.start_with?(YAML_MARKER)
+          if v.start_with?(YAML_MARKER)
             found_yaml = true
-            YAML.load(v)
+            record[k] = YAML.load(v)
           else
-            MessagePack.unpack(v)
+            record[k] = MessagePack.unpack(v)
           end
         end
 

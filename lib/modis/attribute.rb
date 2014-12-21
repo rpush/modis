@@ -1,12 +1,12 @@
 module Modis
   module Attribute
-    TYPES = { :string => [String],
-              :integer => [Fixnum],
-              :float => [Float],
-              :timestamp => [Time],
-              :hash => [Hash],
-              :array => [Array],
-              :boolean => [TrueClass, FalseClass]}.freeze
+    TYPES = { string: [String],
+              integer: [Fixnum],
+              float: [Float],
+              timestamp: [Time],
+              hash: [Hash],
+              array: [Array],
+              boolean: [TrueClass, FalseClass] }.freeze
 
     def self.included(base)
       base.extend ClassMethods
@@ -42,11 +42,9 @@ module Modis
         attributes_with_defaults[name] = options[:default] if options[:default]
         define_attribute_methods([name])
 
-        value_coercion = if type == :timestamp
-          'value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7'
-        end
-
+        value_coercion = type == :timestamp ? 'value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7' : nil
         predicate = type_classes.map { |cls| "value.is_a?(#{cls.name})" }.join(' || ')
+
         type_check = <<-RUBY
         if value && !(#{predicate})
           raise Modis::AttributeCoercionError, "Received value of type '\#{value.class}', expected '#{type_classes.join("', '")}' for attribute '#{name}'."
