@@ -93,6 +93,12 @@ describe Modis::Persistence do
     expect(model.name_changed?).to be false
   end
 
+  it 'does not identify an attribute as changed if the value is the default' do
+    expect(model.class.attributes_with_defaults).to eq('name' => 'Ian')
+    expect(model.name).to eq('Ian')
+    expect(model.name_changed?).to be false
+  end
+
   it 'is persisted' do
     expect(model.persisted?).to be true
   end
@@ -295,18 +301,18 @@ describe Modis::Persistence do
         model.save!
         key = model.class.key_for(model.id)
         record = redis.hgetall(key)
-        record['name'] = YAML.dump('Ian')
+        record['age'] = YAML.dump(30)
         redis.hmset(key, *record.to_a)
         record = redis.hgetall(key)
 
-        expect(record["name"]).to eq("--- Ian\n...\n")
+        expect(record['age']).to eq("--- 30\n...\n")
 
         model.reload
-        expect(model.name).to eq('Ian')
+        expect(model.age).to eq(30)
 
-        model.save!
+        model.save!(yaml_sucks: true)
         record = redis.hgetall(key)
-        expect(record["name"]).to eq("\xA4Ian")
+        expect(record['age']).to eq("\x1E")
       end
     end
   end

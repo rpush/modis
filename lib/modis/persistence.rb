@@ -59,21 +59,30 @@ module Modis
         model
       end
 
-      # YAML_MARKER = '---'.freeze
-      # def coerce_from_persistence(attribute, value)
-      #   # Modis < 1.4.0 used YAML for serialization.
-      #   return YAML.load(value) if value.start_with?(YAML_MARKER)
-      #
-      #   value = MessagePack.unpack(value)
-      #   value = Time.new(*value) if value && attributes[attribute.to_s][:type] == :timestamp
-      #   value
-      # end
-
+      YAML_MARKER = '---'.freeze
       def deserialize(record)
         values = record.values
         values = MessagePack.unpack(msgpack_array_header(values.size) + values.join)
         keys = record.keys
         values.each_with_index { |v, i| record[keys[i]] = v }
+        record
+      rescue MessagePack::MalformedFormatError
+        found_yaml = false
+
+        record.each do |k, v|
+          record[k] = if v.start_with?(YAML_MARKER)
+            found_yaml = true
+            YAML.load(v)
+          else
+            MessagePack.unpack(v)
+          end
+        end
+
+        if found_yaml
+          id = record['id']
+          STDERR.puts "#{self}(id: #{id}) contains attributes serialized as YAML. As of Modis 1.4.0, YAML is no longer used as the serialization format. To improve performance loading this record, you can force the record to new serialization format (MessagePack) with: #{self}.find(#{id}).save!(yaml_sucks: true)"
+        end
+
         record
       end
 
@@ -154,7 +163,7 @@ module Modis
 
     def create_or_update(args = {})
       validate(args)
-      future = persist
+      future = persist(args[:yaml_sucks])
 
       if future && (future == :unchanged || future.value == 'OK')
         reset_changes
@@ -171,7 +180,7 @@ module Modis
       raise Modis::RecordInvalid, errors.full_messages.join(', ')
     end
 
-    def persist
+    def persist(persist_all)
       future = nil
       set_id if new_record?
       callback = new_record? ? :create : :update
@@ -180,7 +189,7 @@ module Modis
         run_callbacks :save do
           run_callbacks callback do
             redis.pipelined do
-              attrs = coerced_attributes
+              attrs = coerced_attributes(persist_all)
               future = attrs.any? ? redis.hmset(self.class.key_for(id), attrs) : :unchanged
 
               if new_record?
@@ -197,10 +206,10 @@ module Modis
       future
     end
 
-    def coerced_attributes # rubocop:disable Metrics/AbcSize
+    def coerced_attributes(persist_all) # rubocop:disable Metrics/AbcSize
       attrs = []
 
-      if new_record?
+      if new_record? || persist_all
         attributes.each do |k, v|
           if (self.class.attributes[k][:default] || nil) != v
             attrs << k << coerce_for_persistence(v)
