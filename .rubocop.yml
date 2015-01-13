@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - modis.gemspec
+    - vendor/**
 
 LineLength:
   Enabled: false
