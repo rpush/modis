@@ -73,7 +73,7 @@ module Modis
     def assign_attributes(hash)
       hash.each do |k, v|
         setter = "#{k}="
-        send(setter, v) if self.class.attributes.key?(k.to_s)
+        send(setter, v) if respond_to?(setter)
       end
     end
 
