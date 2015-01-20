@@ -7,7 +7,7 @@ rvm:
 - 2.1.5
 - 2.2.0
 - jruby-1.7.18
-- rbx-2.4.1
+- rbx-2.5.0
 env:
   global:
     secure: LrTz0Pq2ibNZuKDhdzcrvEUSNxUpPopEq9aJeCxy3UpV0v4vpHBtWV0S6zofvf98g/RkZ6cGI1u+0H578dHgE6pWTo+iR8LAwqPKofrFIWRkeo+M77Vs5swahb3mQyPOcig1hfVWDm25MsojePYm70eBIcBU55NWImtdePXfiU0=
