@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    modis (1.4.0)
+    modis (1.4.1)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
       connection_pool (>= 2)
@@ -33,13 +33,10 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     hiredis (0.5.2)
-    hiredis (0.5.2-java)
     i18n (0.7.0)
     json (1.8.2)
-    json (1.8.2-java)
     minitest (5.5.1)
     msgpack (0.5.10)
-    msgpack (0.5.10-java)
     multi_json (1.10.1)
     parallel (1.3.3)
     parser (2.2.0.2)
@@ -74,7 +71,6 @@ GEM
     simplecov-html (0.8.0)
     stackprof (0.2.7)
     thread_safe (0.3.4)
-    thread_safe (0.3.4-java)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
 
