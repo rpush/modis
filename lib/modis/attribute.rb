@@ -39,7 +39,7 @@ module Modis
         end.flatten
 
         attributes[name] = options.update(type: type)
-        attributes_with_defaults[name] = options[:default] if options[:default]
+        attributes_with_defaults[name] = options[:default]
         define_attribute_methods([name])
 
         value_coercion = type == :timestamp ? 'value = Time.new(*value) if value && value.is_a?(Array) && value.count == 7' : nil

@@ -94,7 +94,7 @@ describe Modis::Persistence do
   end
 
   it 'does not identify an attribute as changed if the value is the default' do
-    expect(model.class.attributes_with_defaults).to eq('name' => 'Ian')
+    expect(model.class.attributes_with_defaults['name']).to eq('Ian')
     expect(model.name).to eq('Ian')
     expect(model.name_changed?).to be false
   end
