@@ -88,7 +88,6 @@ module Modis
     protected
 
     def set_sti_type
-      return unless self.class.sti_child?
       write_attribute(:type, self.class.name)
     end
 
