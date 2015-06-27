@@ -60,11 +60,14 @@ module Modis
       end
 
       def model_for(attributes)
-        model_class(attributes).new(attributes, new_record: false)
+        cls = model_class(attributes)
+        return unless self == cls || cls < self
+        cls.new(attributes, new_record: false)
       end
 
       def record_for(redis, id)
-        redis.hgetall(key_for(id))
+        key = sti_child? ? sti_base_key_for(id) : key_for(id)
+        redis.hgetall(key)
       end
 
       def model_class(record)

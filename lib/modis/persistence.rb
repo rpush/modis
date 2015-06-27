@@ -16,13 +16,14 @@ module Modis
         child.instance_eval do
           parent.instance_eval do
             class << self
-              attr_accessor :sti_parent
+              attr_accessor :sti_base, :sti_parent
             end
             attribute :type, :string unless attributes.key?('type')
           end
 
           @sti_child = true
           @sti_parent = parent
+          @sti_base = parent.sti_base || parent
 
           bootstrap_attributes(parent)
           bootstrap_indexes(parent)
@@ -30,8 +31,11 @@ module Modis
       end
 
       def namespace
-        return sti_parent.namespace if sti_child?
-        @namespace ||= name.split('::').map(&:underscore).join(':')
+        @namespace ||= if sti_child?
+          "#{sti_parent.namespace}:#{name.split('::').last.underscore}"
+        else
+          name.split('::').map(&:underscore).join(':')
+        end
       end
 
       def namespace=(value)
@@ -43,8 +47,16 @@ module Modis
         @absolute_namespace ||= [Modis.config.namespace, namespace].compact.join(':')
       end
 
+      def sti_base_absolute_namespace
+        @sti_base_absolute_namespace ||= [Modis.config.namespace, sti_base.namespace].compact.join(':')
+      end
+
       def key_for(id)
         "#{absolute_namespace}:#{id}"
+      end
+
+      def sti_base_key_for(id)
+        "#{sti_base_absolute_namespace}:#{id}"
       end
 
       def create(attrs)
@@ -104,7 +116,8 @@ module Modis
     end
 
     def key
-      new_record? ? nil : self.class.key_for(id)
+      return nil if new_record?
+      self.class.sti_child? ? self.class.sti_base_key_for(id) : self.class.key_for(id)
     end
 
     def new_record?
@@ -127,6 +140,7 @@ module Modis
           redis.pipelined do
             remove_from_indexes(redis)
             redis.srem(self.class.key_for(:all), id)
+            redis.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
             redis.del(key)
           end
         end
@@ -190,10 +204,12 @@ module Modis
           run_callbacks callback do
             redis.pipelined do
               attrs = coerced_attributes(persist_all)
-              future = attrs.any? ? redis.hmset(self.class.key_for(id), attrs) : :unchanged
+              key = self.class.sti_child? ? self.class.sti_base_key_for(id) : self.class.key_for(id)
+              future = attrs.any? ? redis.hmset(key, attrs) : :unchanged
 
               if new_record?
                 redis.sadd(self.class.key_for(:all), id)
+                redis.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
                 add_to_indexes(redis)
               else
                 update_indexes(redis)
@@ -225,8 +241,9 @@ module Modis
     end
 
     def set_id
+      namespace = self.class.sti_child? ? self.class.sti_base_absolute_namespace : self.class.absolute_namespace
       Modis.with_connection do |redis|
-        self.id = redis.incr("#{self.class.absolute_namespace}_id_seq")
+        self.id = redis.incr("#{namespace}_id_seq")
       end
     end
   end
