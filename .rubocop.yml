@@ -29,3 +29,9 @@ Style/NumericLiterals:
 
 Metrics/AbcSize:
   Max: 25
+
+Style/StructInheritance:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false

@@ -206,7 +206,7 @@ module Modis
       future
     end
 
-    def coerced_attributes(persist_all) # rubocop:disable Metrics/AbcSize
+    def coerced_attributes(persist_all)
       attrs = []
 
       if new_record? || persist_all
