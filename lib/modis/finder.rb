@@ -13,6 +13,7 @@ module Modis
       def all
         records = Modis.with_connection do |redis|
           ids = redis.smembers(key_for(:all))
+
           redis.pipelined do
             ids.map { |id| record_for(redis, id) }
           end

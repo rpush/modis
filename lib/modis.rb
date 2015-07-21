@@ -14,6 +14,8 @@ require 'modis/transaction'
 require 'modis/finder'
 require 'modis/index'
 require 'modis/model'
+require 'modis/migration'
+require 'modis/migrator'
 
 module Modis
   @mutex = Mutex.new

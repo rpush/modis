@@ -173,7 +173,7 @@ describe Modis::Finder do
         Modis.with_connection do |redis|
           redis.srem(FindersSpec::Consumer.key_for(:all), consumer.id)
         end
-        expect(FindersSpec::Consumer.find(consumer.id)).to eq(consumer)
+        expect(FindersSpec::Consumer.all).to include(consumer)
       end
     end
   end
