@@ -32,10 +32,10 @@ module Modis
 
       def namespace
         @namespace ||= if sti_child?
-          "#{sti_parent.namespace}:#{name.split('::').last.underscore}"
-        else
-          name.split('::').map(&:underscore).join(':')
-        end
+                         "#{sti_parent.namespace}:#{name.split('::').last.underscore}"
+                       else
+                         name.split('::').map(&:underscore).join(':')
+                       end
       end
 
       def namespace=(value)

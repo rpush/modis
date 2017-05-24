@@ -126,7 +126,7 @@ describe Modis::Finder do
     end
 
     it 'does not find an instance of a sibling' do
-      consumer = FindersSpec::Consumer.create!(name: 'Kyle')
+      FindersSpec::Consumer.create!(name: 'Kyle')
       producer = FindersSpec::Producer.create!(name: 'Tanya')
       expect do
         FindersSpec::Consumer.find(producer.id)
