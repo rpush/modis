@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   module Persistence
     def self.included(base)
@@ -5,7 +7,7 @@ module Modis
       base.instance_eval do
         class << self
           attr_reader :sti_child
-          alias_method :sti_child?, :sti_child
+          alias sti_child? sti_child
         end
       end
     end
@@ -71,7 +73,7 @@ module Modis
         model
       end
 
-      YAML_MARKER = '---'.freeze
+      YAML_MARKER = '---'
       def deserialize(record)
         values = record.values
         values = MessagePack.unpack(msgpack_array_header(values.size) + values.join)
@@ -194,6 +196,7 @@ module Modis
       raise Modis::RecordInvalid, errors.full_messages.join(', ')
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
     def persist(persist_all)
       future = nil
       set_id if new_record?

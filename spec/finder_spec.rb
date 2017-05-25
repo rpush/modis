@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module FindersSpec
@@ -142,10 +144,10 @@ describe Modis::Finder do
 
     it 'inherits attributes from the parent' do
       producer = FindersSpec::Producer.create!(name: 'Kyle', consumed: true)
-      expect(producer.attributes.keys.sort).to eq(%w(age child_default id name parent_default type))
+      expect(producer.attributes.keys.sort).to eq(%w[age child_default id name parent_default type])
 
       worker = FindersSpec::Worker.create!(name: 'Max')
-      expect(worker.attributes.keys.sort).to eq(%w(age child_default id name parent_default type))
+      expect(worker.attributes.keys.sort).to eq(%w[age child_default id name parent_default type])
     end
 
     it 'inherits default attribute values from the parent' do

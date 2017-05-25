@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 unless ENV['TRAVIS']
   begin
     require './spec/support/simplecov_helper'

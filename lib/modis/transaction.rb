@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   module Transaction
     def self.included(base)

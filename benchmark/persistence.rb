@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift('benchmark')
 require 'bench'
 
@@ -16,7 +18,7 @@ class User
   attribute :flag, :boolean
   attribute :array, :array
   attribute :hash, :hash
-  attribute :string_or_hash, [:string, :hash]
+  attribute :string_or_hash, %i[string hash]
 
   index :name
 end

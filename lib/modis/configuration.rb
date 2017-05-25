@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   def self.configure
     yield config

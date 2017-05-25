@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'rake'
 gem 'rspec'
 
 platform :mri do
-  gem 'codeclimate-test-reporter', require: nil
   gem 'cane'
+  gem 'codeclimate-test-reporter', require: nil
   gem 'rubocop', require: false
   gem 'simplecov', require: false
 end
