@@ -10,7 +10,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["port001@gmail.com"]
   gem.description   = "ActiveModel + Redis"
   gem.summary       = "ActiveModel + Redis"
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/ileitch/modis"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
