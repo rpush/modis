@@ -73,7 +73,6 @@ module Modis
         model
       end
 
-      YAML_MARKER = '---'
       def deserialize(record)
         values = record.values
         values = MessagePack.unpack(msgpack_array_header(values.size) + values.join)
@@ -81,20 +80,8 @@ module Modis
         values.each_with_index { |v, i| record[keys[i]] = v }
         record
       rescue MessagePack::MalformedFormatError
-        found_yaml = false
-
         record.each do |k, v|
-          if v.start_with?(YAML_MARKER)
-            found_yaml = true
-            record[k] = YAML.load(v)
-          else
-            record[k] = MessagePack.unpack(v)
-          end
-        end
-
-        if found_yaml
-          id = record['id']
-          STDERR.puts "#{self}(id: #{id}) contains attributes serialized as YAML. As of Modis 1.4.0, YAML is no longer used as the serialization format. To improve performance loading this record, you can force the record to new serialization format (MessagePack) with: #{self}.find(#{id}).save!(yaml_sucks: true)"
+          record[k] = MessagePack.unpack(v)
         end
 
         record
@@ -179,7 +166,7 @@ module Modis
 
     def create_or_update(args = {})
       validate(args)
-      future = persist(args[:yaml_sucks])
+      future = persist
 
       if future && (future == :unchanged || future.value == 'OK')
         reset_changes
@@ -197,7 +184,7 @@ module Modis
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-    def persist(persist_all)
+    def persist
       future = nil
       set_id if new_record?
       callback = new_record? ? :create : :update
@@ -206,7 +193,7 @@ module Modis
         run_callbacks :save do
           run_callbacks callback do
             redis.pipelined do
-              attrs = coerced_attributes(persist_all)
+              attrs = coerced_attributes
               key = self.class.sti_child? ? self.class.sti_base_key_for(id) : self.class.key_for(id)
               future = attrs.any? ? redis.hmset(key, attrs) : :unchanged
 
@@ -225,10 +212,10 @@ module Modis
       future
     end
 
-    def coerced_attributes(persist_all)
+    def coerced_attributes
       attrs = []
 
-      if new_record? || persist_all
+      if new_record?
         attributes.each do |k, v|
           if (self.class.attributes[k][:default] || nil) != v
             attrs << k << coerce_for_persistence(v)
