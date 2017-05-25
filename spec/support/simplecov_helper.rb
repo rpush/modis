@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 require './spec/support/simplecov_quality_formatter'
 
@@ -17,7 +19,7 @@ module SimpleCovHelper
         end
       end
 
-      formatter SimpleCov::Formatter::MultiFormatter[*formatters]
+      formatter SimpleCov::Formatter::MultiFormatter.new(*formatters)
     end
   end
 end

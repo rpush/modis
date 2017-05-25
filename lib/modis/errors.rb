@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   class ModisError < StandardError; end
   class RecordNotSaved < ModisError; end

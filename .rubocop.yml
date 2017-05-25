@@ -35,3 +35,9 @@ Style/StructInheritance:
 
 Metrics/ModuleLength:
   Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false

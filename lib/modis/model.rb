@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   module Model
     def self.included(base)
@@ -42,6 +44,6 @@ module Modis
     def ==(other)
       super || other.instance_of?(self.class) && id.present? && other.id == id
     end
-    alias_method :eql?, :==
+    alias eql? ==
   end
 end

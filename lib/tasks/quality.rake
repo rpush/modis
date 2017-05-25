@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   if ENV['TRAVIS']
     namespace :spec do
@@ -16,7 +18,7 @@ begin
     end
 
     namespace :spec do
-      task cane: %w(spec cane_quality)
+      task cane: %w[spec cane_quality]
     end
   end
 rescue LoadError
@@ -37,5 +39,5 @@ rescue LoadError
 end
 
 namespace :spec do
-  task quality: %w(cane rubocop)
+  task quality: %w[cane rubocop]
 end

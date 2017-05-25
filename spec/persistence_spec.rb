@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module PersistenceSpec
@@ -292,28 +294,6 @@ describe Modis::Persistence do
 
     it 'returns false if the model is invalid' do
       expect(model.update_attributes(name: nil)).to be false
-    end
-  end
-
-  describe 'YAML backward compatability' do
-    it 'loads a YAML serialized value' do
-      Modis.with_connection do |redis|
-        model.save!
-        key = model.class.key_for(model.id)
-        record = redis.hgetall(key)
-        record['age'] = YAML.dump(30)
-        redis.hmset(key, *record.to_a)
-        record = redis.hgetall(key)
-
-        expect(record['age']).to eq("--- 30\n...\n")
-
-        model.reload
-        expect(model.age).to eq(30)
-
-        model.save!(yaml_sucks: true)
-        record = redis.hgetall(key)
-        expect(record['age']).to eq("\x1E")
-      end
     end
   end
 end

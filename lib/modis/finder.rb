@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Modis
   module Finder
     def self.included(base)
@@ -61,7 +63,7 @@ module Modis
 
       def model_for(attributes)
         cls = model_class(attributes)
-        return unless self == cls || cls < self
+        return unless cls == self || cls < self
         cls.new(attributes, new_record: false)
       end
 

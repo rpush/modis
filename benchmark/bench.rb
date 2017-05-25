@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stackprof'
 require 'benchmark'
 
@@ -40,14 +42,14 @@ class Bench
 
   private
 
-  def with_profile(name, &blk)
+  def with_profile(name)
     if ENV['PROFILE']
       mode = :wall
       out = "tmp/stackprof-#{mode}-#{name}.dump"
       @profiles << out
-      StackProf.run(mode: mode, out: out, &blk)
+      StackProf.run(mode: mode, out: out, &Proc.new)
     else
-      blk.call
+      yield
     end
   end
 
