@@ -6,6 +6,10 @@
 
 ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 
+## Requirements
+
+Modis supports CRuby 2.2.2+ and jRuby 9k+
+
 ## Installation
 
 Add this line to your application's Gemfile:
