@@ -18,7 +18,7 @@ module Modis
           end
         end
 
-        records_to_models(records)
+        records_to_models(records).select { |model| model.class.ancestors.include?(self) }
       end
 
       def attributes_for(redis, id)

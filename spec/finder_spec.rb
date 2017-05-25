@@ -65,6 +65,24 @@ describe Modis::Finder do
       model.destroy
       expect(FindersSpec::User.all).to eq([])
     end
+
+    describe 'does only return models from the same class' do
+      let!(:consumer) { FindersSpec::Consumer.create!(name: 'Franzl', age: 25) }
+      let!(:producer_1) { FindersSpec::Producer.create!(name: 'Tanya', age: 30) }
+      let!(:producer_2) { FindersSpec::Producer.create!(name: 'Kyle', age: 32) }
+
+      it 'finds all Users with the User finder (including STI children Consumer and Producer)' do
+        expect(FindersSpec::User.all).to eq([model, consumer, producer_1, producer_2])
+      end
+
+      it 'finds only Consumers with the Consumer finder (STI child of User)' do
+        expect(FindersSpec::Consumer.all).to eq([consumer])
+      end
+
+      it 'finds only Producers with the Producer finder (STI child of User)' do
+        expect(FindersSpec::Producer.all).to eq([producer_1, producer_2])
+      end
+    end
   end
 
   it 'identifies a found record as not being new' do

@@ -227,7 +227,7 @@ module Modis
 
       if new_record? || persist_all
         attributes.each do |k, v|
-          if (self.class.attributes[k][:default] || nil) != v
+          if (self.class.attributes[k].try(:'[]', :default) || nil) != v
             attrs << k << coerce_for_persistence(v)
           end
         end
