@@ -47,6 +47,10 @@ module PersistenceSpec
       called_callbacks << :test_before_save
     end
   end
+
+  class MockModelNoAllIndex < MockModel
+    enable_all_index false
+  end
 end
 
 describe Modis::Persistence do
@@ -294,6 +298,24 @@ describe Modis::Persistence do
 
     it 'returns false if the model is invalid' do
       expect(model.update_attributes(name: nil)).to be false
+    end
+  end
+
+  describe 'key for all records' do
+    let(:all_key_name) { "#{PersistenceSpec::MockModel.absolute_namespace}:all" }
+
+    describe 'when :enable_all_index option is set to false' do
+      it 'does not save new record to the *:all key' do
+        model = PersistenceSpec::MockModel.create!(name: 'Sage')
+        expect(Redis.new.smembers(all_key_name).map(&:to_i)).to include(model.id)
+      end
+    end
+
+    describe 'when :enable_all_index option is set to false' do
+      it 'does not save new record to the *:all key' do
+        model = PersistenceSpec::MockModelNoAllIndex.create!(name: 'Alex')
+        expect(Redis.new.smembers(all_key_name).map(&:to_i)).to_not include(model.id)
+      end
     end
   end
 end
