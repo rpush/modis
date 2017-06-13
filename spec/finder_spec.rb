@@ -22,6 +22,10 @@ module FindersSpec
 
   class Worker < Producer
   end
+
+  class UserNoAllIndex < User
+    enable_all_index false
+  end
 end
 
 describe Modis::Finder do
@@ -66,6 +70,12 @@ describe Modis::Finder do
     it 'does not return a destroyed record' do
       model.destroy
       expect(FindersSpec::User.all).to eq([])
+    end
+
+    it 'throws error when enable_all_index option is set to false' do
+      FindersSpec::UserNoAllIndex.create!(name: 'Yana')
+      expect { FindersSpec::UserNoAllIndex.all }
+        .to raise_error(Modis::IndexError)
     end
   end
 

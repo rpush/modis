@@ -13,6 +13,11 @@ module Modis
       end
 
       def all
+        unless all_index_enabled?
+          raise IndexError, "Unable to retrieve all records of #{name}, "\
+            "because you disabled all index. See :enable_all_index for more."
+        end
+
         records = Modis.with_connection do |redis|
           ids = redis.smembers(key_for(:all))
           redis.pipelined do
