@@ -61,6 +61,14 @@ module Modis
         "#{sti_base_absolute_namespace}:#{id}"
       end
 
+      def enable_all_index(bool)
+        @use_all_index = bool
+      end
+
+      def all_index_enabled?
+        @use_all_index == true || @use_all_index.nil?
+      end
+
       def create(attrs)
         model = new(attrs)
         model.save
@@ -128,8 +136,10 @@ module Modis
         run_callbacks :destroy do
           redis.pipelined do
             remove_from_indexes(redis)
-            redis.srem(self.class.key_for(:all), id)
-            redis.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+            if self.class.all_index_enabled?
+              redis.srem(self.class.key_for(:all), id)
+              redis.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+            end
             redis.del(key)
           end
         end
@@ -198,8 +208,10 @@ module Modis
               future = attrs.any? ? redis.hmset(key, attrs) : :unchanged
 
               if new_record?
-                redis.sadd(self.class.key_for(:all), id)
-                redis.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+                if self.class.all_index_enabled?
+                  redis.sadd(self.class.key_for(:all), id)
+                  redis.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+                end
                 add_to_indexes(redis)
               else
                 update_indexes(redis)
