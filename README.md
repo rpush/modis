@@ -36,6 +36,19 @@ end
 MyModel.create!(:name => 'Ian', :age => 28)
 ```
 
+### all index
+
+Modis, by default, creates an `all` index in redis in which it stores all the IDs for records created. As a result, a large amount of memory will be consumed if many ids are stored. The `all` index functionality can be turned off by using `enable_all_index`
+
+```ruby
+  class MyModel
+    include Modis::Model
+    enable_all_index false
+  end
+```
+
+By disabling the `all` index functionality, the IDs of each record created won't be saved. As a side effect, using `all` finder method will raise a `IndexError` exception as we would not have enough information to fetch all records. See https://github.com/ileitch/modis/pull/7 for more context.
+
 ## Supported Features
 
 TODO.
