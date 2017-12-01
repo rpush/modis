@@ -8,13 +8,66 @@ rvm:
   - 2.3.5
   - 2.4.2
   - ruby-head
-  - jruby-9.1.14.0
-  - jruby-head
+
+gemfile:
+  - gemfiles/rails_42.gemfile
+  - gemfiles/rails_50.gemfile
+  - gemfiles/rails_51.gemfile
+  - gemfiles/rails_52.gemfile
+  - gemfiles/rails_edge.gemfile
 
 matrix:
+  exclude:
+    - rvm: ruby-head
+      gemfile: gemfiles/rails_42.gemfile
+
+  include:
+    - rvm: jruby-9.1.14.0
+      gemfile: gemfiles/rails_42.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-9.1.14.0
+      gemfile: gemfiles/rails_50.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-9.1.14.0
+      gemfile: gemfiles/rails_51.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-9.1.14.0
+      gemfile: gemfiles/rails_52.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-9.1.14.0
+      gemfile: gemfiles/rails_edge.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-head
+      gemfile: gemfiles/rails_42.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-head
+      gemfile: gemfiles/rails_50.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-head
+      gemfile: gemfiles/rails_51.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-head
+      gemfile: gemfiles/rails_52.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+    - rvm: jruby-head
+      gemfile: gemfiles/rails_edge.gemfile
+      jdk: oraclejdk8
+      env: JRUBY_OPTS='--debug' # get more accurate coverage data
+
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+
+  fast_finish: true
 
 env:
   global:

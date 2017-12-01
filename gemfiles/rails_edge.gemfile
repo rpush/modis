@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+
+gem 'activemodel', git: 'https://github.com/rails/rails', require: 'activemodel'
+gem 'activesupport', git: 'https://github.com/rails/rails', require: 'activesupport'
+
+gemspec :path => '../'
