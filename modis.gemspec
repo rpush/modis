@@ -30,4 +30,11 @@ Gem::Specification.new do |gem|
   else
     gem.add_runtime_dependency 'msgpack', '>= 0.5'
   end
+
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'codeclimate-test-reporter'
+  gem.add_development_dependency 'cane'
+  gem.add_development_dependency 'rubocop'
+  gem.add_development_dependency 'simplecov'
 end
