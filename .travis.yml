@@ -1,12 +1,21 @@
-sudo: false
-services:
-- redis-server
 language: ruby
+sudo: false
+cache: bundler
+services:
+  - redis-server
 rvm:
-- 2.2.4
-- 2.3.0
-- 2.4.0
-- jruby-9.1.9.0
+  - 2.2.8
+  - 2.3.5
+  - 2.4.2
+  - ruby-head
+  - jruby-9.1.14.0
+  - jruby-head
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
+
 env:
   global:
     secure: LrTz0Pq2ibNZuKDhdzcrvEUSNxUpPopEq9aJeCxy3UpV0v4vpHBtWV0S6zofvf98g/RkZ6cGI1u+0H578dHgE6pWTo+iR8LAwqPKofrFIWRkeo+M77Vs5swahb3mQyPOcig1hfVWDm25MsojePYm70eBIcBU55NWImtdePXfiU0=
