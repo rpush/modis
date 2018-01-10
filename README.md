@@ -28,9 +28,9 @@ Or install it yourself as:
 
 ```ruby
 class MyModel
-  include Modis::Models
-  attribute :name, String
-  attribute :age, Integer
+  include Modis::Model
+  attribute :name, :string
+  attribute :age, :integer
 end
 
 MyModel.create!(:name => 'Ian', :age => 28)
