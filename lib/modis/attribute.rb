@@ -53,7 +53,7 @@ module Modis
         end
         RUBY
 
-        class_eval <<-RUBY, __FILE__, __LINE__
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{name}
             attributes['#{name}']
           end
