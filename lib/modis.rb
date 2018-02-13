@@ -20,16 +20,19 @@ module Modis
   @mutex = Mutex.new
 
   class << self
+    attr_writer :redis_options, :connection_pool_size, :connection_pool_timeout,
+                :connection_pool
+
     def redis_options
-      { driver: :hiredis }
+      @redis_options ||= { driver: :hiredis }
     end
 
     def connection_pool_size
-      5
+      @connection_pool_size ||= 5
     end
 
     def connection_pool_timeout
-      5
+      @connection_pool_timeout ||= 5
     end
 
     def connection_pool
