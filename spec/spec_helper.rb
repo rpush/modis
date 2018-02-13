@@ -3,7 +3,7 @@
 unless ENV['TRAVIS']
   begin
     require './spec/support/simplecov_helper'
-    include SimpleCovHelper
+    include SimpleCovHelper # rubocop:disable Style/MixinUsage
     start_simple_cov('unit')
   rescue LoadError
     puts "Coverage disabled."

@@ -20,23 +20,31 @@ module Modis
   @mutex = Mutex.new
 
   class << self
-    attr_accessor :connection_pool, :redis_options, :connection_pool_size,
-                  :connection_pool_timeout
-  end
+    attr_writer :redis_options, :connection_pool_size, :connection_pool_timeout,
+                :connection_pool
 
-  self.redis_options = { driver: :hiredis }
-  self.connection_pool_size = 5
-  self.connection_pool_timeout = 5
-
-  def self.connection_pool
-    return @connection_pool if @connection_pool
-    @mutex.synchronize do
-      options = { size: connection_pool_size, timeout: connection_pool_timeout }
-      @connection_pool = ConnectionPool.new(options) { Redis.new(redis_options) }
+    def redis_options
+      @redis_options ||= { driver: :hiredis }
     end
-  end
 
-  def self.with_connection
-    connection_pool.with { |connection| yield(connection) }
+    def connection_pool_size
+      @connection_pool_size ||= 5
+    end
+
+    def connection_pool_timeout
+      @connection_pool_timeout ||= 5
+    end
+
+    def connection_pool
+      return @connection_pool if @connection_pool
+      @mutex.synchronize do
+        options = { size: connection_pool_size, timeout: connection_pool_timeout }
+        @connection_pool = ConnectionPool.new(options) { Redis.new(redis_options) }
+      end
+    end
+
+    def with_connection
+      connection_pool.with { |connection| yield(connection) }
+    end
   end
 end

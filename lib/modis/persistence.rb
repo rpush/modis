@@ -223,6 +223,7 @@ module Modis
 
       future
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
     def coerced_attributes
       attrs = []
@@ -234,8 +235,8 @@ module Modis
           end
         end
       else
-        changed_attributes.each do |k, _|
-          attrs << k << coerce_for_persistence(attributes[k])
+        changed_attributes.each_key do |key|
+          attrs << key << coerce_for_persistence(attributes[key])
         end
       end
 
