@@ -35,7 +35,7 @@ module Modis
       apply_defaults
       set_sti_type
       assign_attributes(record) if record
-      reset_changes
+      changes_applied
 
       return unless options.key?(:new_record)
 
