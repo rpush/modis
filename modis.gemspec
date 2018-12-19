@@ -18,8 +18,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_runtime_dependency 'activemodel', '>= 3.0'
-  gem.add_runtime_dependency 'activesupport', '>= 3.0'
+  gem.add_runtime_dependency 'activemodel', ['>= 3.0', '< 5.2']
+  gem.add_runtime_dependency 'activesupport', ['>= 3.0', '< 5.2']
   gem.add_runtime_dependency 'redis', '>= 3.0'
   gem.add_runtime_dependency 'hiredis', '>= 0.5'
   gem.add_runtime_dependency 'connection_pool', '>= 2'
