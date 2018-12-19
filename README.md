@@ -8,7 +8,7 @@ ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 
 ## Requirements
 
-Modis supports CRuby 2.2.2+ and jRuby 9k+
+Modis supports any actively supported Ruby and Ruby on Rails versions. As of 2018-12-19, that means CRuby 2.3+ and jRuby 9k+, as well as Rails 4.2+.
 
 ## Installation
 

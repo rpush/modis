@@ -8,7 +8,6 @@ services:
   - redis-server
 
 rvm:
-  - 2.2.10
   - 2.3.8
   - 2.4.5
   - 2.5.3
@@ -16,14 +15,13 @@ rvm:
   - jruby-9.2.5.0
 
 gemfile:
-  - gemfiles/rails_30.gemfile
-  - gemfiles/rails_31.gemfile
-  - gemfiles/rails_32.gemfile
-  - gemfiles/rails_40.gemfile
-  - gemfiles/rails_41.gemfile
   - gemfiles/rails_42.gemfile
   - gemfiles/rails_50.gemfile
   - gemfiles/rails_51.gemfile
+  - gemfiles/rails_52.gemfile
+
+allow_failures:
+  - gemfile: gemfiles/rails_52.gemfile
 
 env:
   global:
