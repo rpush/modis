@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - modis.gemspec
     - vendor/**/*
+    - gemfiles/**/*
 
 LineLength:
   Enabled: false
