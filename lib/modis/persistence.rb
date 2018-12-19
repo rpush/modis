@@ -97,13 +97,13 @@ module Modis
 
       private
 
-      def msgpack_array_header(n)
-        if n < 16
-          [0x90 | n].pack("C")
-        elsif n < 65536
-          [0xDC, n].pack("Cn")
+      def msgpack_array_header(values_size)
+        if values_size < 16
+          [0x90 | values_size].pack("C")
+        elsif values_size < 65536
+          [0xDC, values_size].pack("Cn")
         else
-          [0xDD, n].pack("CN")
+          [0xDD, values_size].pack("CN")
         end.force_encoding(Encoding::UTF_8)
       end
     end
@@ -114,6 +114,7 @@ module Modis
 
     def key
       return nil if new_record?
+
       self.class.sti_child? ? self.class.sti_base_key_for(id) : self.class.key_for(id)
     end
 
@@ -190,6 +191,7 @@ module Modis
     def validate(args)
       skip_validate = args.key?(:validate) && args[:validate] == false
       return if skip_validate || valid?
+
       raise Modis::RecordInvalid, errors.full_messages.join(', ')
     end
 
@@ -230,9 +232,7 @@ module Modis
 
       if new_record?
         attributes.each do |k, v|
-          if (self.class.attributes[k][:default] || nil) != v
-            attrs << k << coerce_for_persistence(v)
-          end
+          attrs << k << coerce_for_persistence(v) if (self.class.attributes[k][:default] || nil) != v
         end
       else
         changed_attributes.each_key do |key|

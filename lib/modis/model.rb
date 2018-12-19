@@ -38,6 +38,7 @@ module Modis
       reset_changes
 
       return unless options.key?(:new_record)
+
       instance_variable_set('@new_record', options[:new_record])
     end
 

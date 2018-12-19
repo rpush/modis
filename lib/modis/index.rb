@@ -21,14 +21,17 @@ module Modis
       def index(attribute)
         attribute = attribute.to_s
         raise IndexError, "No such attribute '#{attribute}'" unless attributes.key?(attribute)
+
         indexed_attributes << attribute
       end
 
       def where(query)
         raise IndexError, 'Queries using multiple indexes is not currently supported.' if query.keys.size > 1
+
         attribute, value = query.first
         ids = index_for(attribute, value)
         return [] if ids.empty?
+
         find_all(ids)
       end
 

@@ -37,6 +37,7 @@ module Modis
 
     def connection_pool
       return @connection_pool if @connection_pool
+
       @mutex.synchronize do
         options = { size: connection_pool_size, timeout: connection_pool_timeout }
         @connection_pool = ConnectionPool.new(options) { Redis.new(redis_options) }
