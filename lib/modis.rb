@@ -3,6 +3,7 @@
 require 'redis'
 require 'connection_pool'
 require 'active_model'
+require 'modis/active_model_dirty_5_1'
 require 'active_support/all'
 require 'msgpack'
 

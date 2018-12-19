@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - modis.gemspec
+    - lib/modis/active_model_dirty_5_1.rb
     - vendor/**/*
 
 LineLength:
