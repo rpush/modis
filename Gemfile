@@ -8,7 +8,7 @@ gem 'rspec'
 platform :mri do
   gem 'cane'
   gem 'codeclimate-test-reporter', require: nil
-  gem 'rubocop', require: false
+  gem 'rubocop', '0.61.1', require: false
   gem 'simplecov', require: false
 end
 

@@ -37,6 +37,7 @@ module Modis
 
         type_classes = Array(type).map do |t|
           raise UnsupportedAttributeType, t unless TYPES.key?(t)
+
           TYPES[t]
         end.flatten
 
@@ -91,6 +92,7 @@ module Modis
 
     def set_sti_type
       return unless self.class.sti_child?
+
       write_attribute(:type, self.class.name)
     end
 

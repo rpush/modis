@@ -33,9 +33,7 @@ module Modis
 
         attributes = deserialize(record_for(redis, id))
 
-        unless attributes['id'].present?
-          raise RecordNotFound, "Couldn't find #{name} with id=#{id}"
-        end
+        raise RecordNotFound, "Couldn't find #{name} with id=#{id}" unless attributes['id'].present?
 
         attributes
       end
@@ -69,6 +67,7 @@ module Modis
       def model_for(attributes)
         cls = model_class(attributes)
         return unless cls == self || cls < self
+
         cls.new(attributes, new_record: false)
       end
 
@@ -79,6 +78,7 @@ module Modis
 
       def model_class(record)
         return self if record["type"].blank?
+
         record["type"].constantize
       end
     end
