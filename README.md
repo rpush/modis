@@ -33,7 +33,7 @@ class MyModel
   attribute :age, :integer
 end
 
-MyModel.create!(:name => 'Ian', :age => 28)
+MyModel.create!(name: 'Ian', age: 28)
 ```
 
 ### all index
