@@ -19,8 +19,6 @@ module Modis
 
     module ClassMethods
       def bootstrap_attributes(parent = nil)
-        attr_reader :attributes
-
         class << self
           attr_accessor :attributes, :attributes_with_defaults
         end
@@ -73,6 +71,10 @@ module Modis
       end
     end
 
+    def attributes
+      @modis_attributes
+    end
+
     def assign_attributes(hash)
       hash.each do |k, v|
         setter = "#{k}="
@@ -96,12 +98,8 @@ module Modis
       write_attribute(:type, self.class.name)
     end
 
-    def reset_changes
-      @changed_attributes = nil
-    end
-
     def apply_defaults
-      @attributes = Hash[self.class.attributes_with_defaults]
+      @modis_attributes = Hash[self.class.attributes_with_defaults]
     end
   end
 end

@@ -180,7 +180,7 @@ module Modis
       future = persist
 
       if future && (future == :unchanged || future.value == 'OK')
-        reset_changes
+        changes_applied
         @new_record = false
         true
       else

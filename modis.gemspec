@@ -18,8 +18,10 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_runtime_dependency 'activemodel', ['>= 3.0', '< 5.2']
-  gem.add_runtime_dependency 'activesupport', ['>= 3.0', '< 5.2']
+  gem.required_ruby_version = ">= 2.3.0"
+
+  gem.add_runtime_dependency 'activemodel', ['>= 4.2']
+  gem.add_runtime_dependency 'activesupport', ['>= 4.2']
   gem.add_runtime_dependency 'redis', '>= 3.0'
   gem.add_runtime_dependency 'hiredis', '>= 0.5'
   gem.add_runtime_dependency 'connection_pool', '>= 2'
@@ -30,4 +32,11 @@ Gem::Specification.new do |gem|
   else
     gem.add_runtime_dependency 'msgpack', '>= 0.5'
   end
+
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'codeclimate-test-reporter'
+  gem.add_development_dependency 'cane'
+  gem.add_development_dependency 'rubocop', '0.61.1'
+  gem.add_development_dependency 'simplecov'
 end
