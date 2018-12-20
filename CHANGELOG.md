@@ -1,8 +1,10 @@
 ## Unreleased
 
+## v3.0.0 - 2018-12-20
+
 - Drop support for any Ruby < 2.3 and Rails < 4.2.
 - Add support for Rails 5.2
-- Resolve some Rubocop lint violations
+- Resolve Rubocop lint violations
 - Test combinations of Ruby and Rails versions in CI
 
 ## v2.1.0
