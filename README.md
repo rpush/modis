@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ileitch/modis.svg?branch=master)](https://travis-ci.org/ileitch/modis)
+[![Build Status](https://travis-ci.org/rpush/modis.svg?branch=master)](https://travis-ci.org/rpush/modis)
 [![Code Climate](https://codeclimate.com/github/ileitch/modis/badges/gpa.svg)](https://codeclimate.com/github/ileitch/modis)
 [![Test Coverage](https://codeclimate.com/github/ileitch/modis/badges/coverage.svg)](https://codeclimate.com/github/ileitch/modis)
 
