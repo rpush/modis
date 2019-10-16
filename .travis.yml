@@ -16,10 +16,11 @@ rvm:
   - jruby-9.2.5.0
 
 gemfile:
-  - gemfiles/rails_42.gemfile
-  - gemfiles/rails_50.gemfile
-  - gemfiles/rails_51.gemfile
-  - gemfiles/rails_52.gemfile
+  - gemfiles/rails_4.2.gemfile
+  - gemfiles/rails_5.0.gemfile
+  - gemfiles/rails_5.1.gemfile
+  - gemfiles/rails_5.2.gemfile
+  - gemfiles/rails_6.0.gemfile
 
 env:
   global:

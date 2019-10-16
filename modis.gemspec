@@ -34,6 +34,7 @@ Gem::Specification.new do |gem|
     gem.add_runtime_dependency 'msgpack', '>= 0.5'
   end
 
+  gem.add_development_dependency "appraisal"
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'codeclimate-test-reporter'
