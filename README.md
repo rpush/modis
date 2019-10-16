@@ -47,7 +47,7 @@ Modis, by default, creates an `all` index in redis in which it stores all the ID
   end
 ```
 
-By disabling the `all` index functionality, the IDs of each record created won't be saved. As a side effect, using `all` finder method will raise a `IndexError` exception as we would not have enough information to fetch all records. See https://github.com/ileitch/modis/pull/7 for more context.
+By disabling the `all` index functionality, the IDs of each record created won't be saved. As a side effect, using `all` finder method will raise a `IndexError` exception as we would not have enough information to fetch all records. See https://github.com/rpush/modis/pull/7 for more context.
 
 ## Supported Features
 

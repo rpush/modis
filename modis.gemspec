@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["port001@gmail.com"]
   gem.description   = "ActiveModel + Redis"
   gem.summary       = "ActiveModel + Redis"
-  gem.homepage      = "https://github.com/ileitch/modis"
+  gem.homepage      = "https://github.com/rpush/modis"
   gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
@@ -34,6 +34,7 @@ Gem::Specification.new do |gem|
     gem.add_runtime_dependency 'msgpack', '>= 0.5'
   end
 
+  gem.add_development_dependency "appraisal"
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'codeclimate-test-reporter'
