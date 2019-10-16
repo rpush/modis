@@ -22,6 +22,15 @@ gemfile:
   - gemfiles/rails_5.2.gemfile
   - gemfiles/rails_6.0.gemfile
 
+matrix:
+  fast_finish: true
+  exclude:
+    # Rails 6 requires Ruby 2.5 or higher
+    - gemfile: gemfiles/rails_6.0.gemfile
+      rvm: 2.3
+    - gemfile: gemfiles/rails_6.0.gemfile
+      rvm: 2.4
+
 env:
   global:
     secure: LrTz0Pq2ibNZuKDhdzcrvEUSNxUpPopEq9aJeCxy3UpV0v4vpHBtWV0S6zofvf98g/RkZ6cGI1u+0H578dHgE6pWTo+iR8LAwqPKofrFIWRkeo+M77Vs5swahb3mQyPOcig1hfVWDm25MsojePYm70eBIcBU55NWImtdePXfiU0=
