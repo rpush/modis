@@ -249,6 +249,33 @@ describe Modis::Persistence do
     end
   end
 
+  describe 'update!' do
+    it 'updates the given attributes' do
+      model.update!(name: 'Derp', age: 29)
+      model.reload
+      expect(model.name).to eq 'Derp'
+      expect(model.age).to eq 29
+    end
+
+    it 'invokes callbacks' do
+      model.update!(name: 'Derp')
+      expect(model.called_callbacks).to_not be_empty
+    end
+
+    it 'updates all dirty attributes' do
+      model.age = 29
+      model.update!(name: 'Derp')
+      model.reload
+      expect(model.age).to eq 29
+    end
+
+    it 'raises an error if the model is invalid' do
+      expect do
+        model.update!(name: nil).to be false
+      end.to raise_error(Modis::RecordInvalid)
+    end
+  end
+
   describe 'update_attributes!' do
     it 'updates the given attributes' do
       model.update_attributes!(name: 'Derp', age: 29)
@@ -273,6 +300,31 @@ describe Modis::Persistence do
       expect do
         model.update_attributes!(name: nil).to be false
       end.to raise_error(Modis::RecordInvalid)
+    end
+  end
+
+  describe 'update' do
+    it 'updates the given attributes' do
+      model.update(name: 'Derp', age: 29)
+      model.reload
+      expect(model.name).to eq('Derp')
+      expect(model.age).to eq(29)
+    end
+
+    it 'invokes callbacks' do
+      model.update(name: 'Derp')
+      expect(model.called_callbacks).to_not be_empty
+    end
+
+    it 'updates all dirty attributes' do
+      model.age = 29
+      model.update(name: 'Derp')
+      model.reload
+      expect(model.age).to eq(29)
+    end
+
+    it 'returns false if the model is invalid' do
+      expect(model.update(name: nil)).to be false
     end
   end
 

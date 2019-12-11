@@ -158,15 +158,21 @@ module Modis
       save(validate: false)
     end
 
-    def update_attributes(attrs)
+    def update(attrs)
       assign_attributes(attrs)
       save
     end
 
-    def update_attributes!(attrs)
+    alias update_attributes update
+    deprecate update_attributes: 'please, use update instead'
+
+    def update!(attrs)
       assign_attributes(attrs)
       save!
     end
+
+    alias update_attributes! update!
+    deprecate update_attributes!: 'please, use update! instead'
 
     private
 
