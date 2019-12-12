@@ -1,5 +1,9 @@
 ## Unreleased
 
+## v3.2.0 - 2019-12-12
+
+- Add missing `#update` and `#update!`. [#27](https://github.com/rpush/modis/pull/27) by [@dsantosmerino](https://github.com/dsantosmerino).
+
 ## v3.1.0 - 2019-10-18
 
 - Test with Rails 6
