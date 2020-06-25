@@ -185,7 +185,7 @@ module Modis
       validate(args)
       future = persist
 
-      if future && (:unchanged == future || future.value == 'OK')
+      if future && ((future.is_a?(Symbol) && future == :unchanged) || future.value == 'OK')
         changes_applied
         @new_record = false
         true
