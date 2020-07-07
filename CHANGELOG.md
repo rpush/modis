@@ -1,5 +1,9 @@
 ## Unreleased
 
+## v3.3.0 - 2020-07-07
+
+- Fix deprecation warnings when using Ruby >= 2.7, `activemodel` >= 6.0.3, or `redis` >= 4.2.0. [#30](https://github.com/rpush/modis/pull/30) by [@rofreg](https://github.com/rofreg).
+
 ## v3.2.0 - 2019-12-12
 
 - Add missing `#update` and `#update!`. [#27](https://github.com/rpush/modis/pull/27) by [@dsantosmerino](https://github.com/dsantosmerino).
