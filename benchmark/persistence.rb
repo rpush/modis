@@ -62,7 +62,7 @@ Bench.run do |b|
   b.report(:update_without_changes) do
     user = create_user
     n.times do
-      user.update_attributes!(name: user.name, age: user.age)
+      user.update!(name: user.name, age: user.age)
     end
   end
 
