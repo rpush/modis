@@ -23,7 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'activemodel', '>= 4.2'
   gem.add_runtime_dependency 'activesupport', '>= 4.2'
   gem.add_runtime_dependency 'redis', '>= 3.0'
-  gem.add_runtime_dependency 'hiredis', '>= 0.5'
   gem.add_runtime_dependency 'connection_pool', '>= 2'
 
   if defined? JRUBY_VERSION
@@ -40,4 +39,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'cane'
   gem.add_development_dependency 'rubocop', '0.61.1'
   gem.add_development_dependency 'simplecov'
+  gem.add_development_dependency 'hiredis', '>= 0.5'
 end
