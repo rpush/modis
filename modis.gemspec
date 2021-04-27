@@ -20,8 +20,8 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = ">= 2.3.0"
 
-  gem.add_runtime_dependency 'activemodel', '>= 4.2'
-  gem.add_runtime_dependency 'activesupport', '>= 4.2'
+  gem.add_runtime_dependency 'activemodel', '>= 5.2'
+  gem.add_runtime_dependency 'activesupport', '>= 5.2'
   gem.add_runtime_dependency 'redis', '>= 3.0'
   gem.add_runtime_dependency 'connection_pool', '>= 2'
 
