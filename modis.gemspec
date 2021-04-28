@@ -37,7 +37,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'codeclimate-test-reporter'
   gem.add_development_dependency 'cane'
-  gem.add_development_dependency 'rubocop', '0.61.1'
+  gem.add_development_dependency 'rubocop', '0.81.0'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'hiredis', '>= 0.5'
 end
