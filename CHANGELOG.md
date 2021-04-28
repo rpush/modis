@@ -1,5 +1,13 @@
 ## Unreleased
 
+## v4.0.0 - 2021-04-28
+
+**Breaking:**
+
+- Drop support for Rails 4.2, 5.0, 5.1.
+- Removed `hiredis` as a dependency and made it a development dependency.
+  For details, see [#31](https://github.com/rpush/modis/pull/31) by [@fdoxyz](https://github.com/fdoxyz).
+
 ## v3.3.0 - 2020-07-07
 
 - Fix deprecation warnings when using Ruby >= 2.7, `activemodel` >= 6.0.3, or `redis` >= 4.2.0. [#30](https://github.com/rpush/modis/pull/30) by [@rofreg](https://github.com/rofreg).
