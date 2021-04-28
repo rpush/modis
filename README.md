@@ -8,21 +8,29 @@ ActiveModel + Redis with the aim to mimic ActiveRecord where possible.
 
 ## Requirements
 
-Modis supports any actively supported Ruby and Ruby on Rails versions. As of 2018-12-20, that means CRuby 2.3+ and jRuby 9k+, as well as Rails 4.2+.
+Modis 4.0+ supports Rails 5.2 and higher, including Rails 6.1, as well as Ruby 2.3 and above, including Ruby 3.0. Tests are also being run with JRuby. For details please check the current CI setup.
+
+For releases supporting older Rails versions such as 4.2-5.1 please check out the 3.x releases.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'modis'
+```ruby
+gem 'modis'
+```
 
 And then execute:
 
-    $ bundle
+```console
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install modis
+```console
+$ gem install modis
+```
 
 ## Usage
 
@@ -41,10 +49,10 @@ MyModel.create!(name: 'Ian', age: 28)
 Modis, by default, creates an `all` index in redis in which it stores all the IDs for records created. As a result, a large amount of memory will be consumed if many ids are stored. The `all` index functionality can be turned off by using `enable_all_index`
 
 ```ruby
-  class MyModel
-    include Modis::Model
-    enable_all_index false
-  end
+class MyModel
+  include Modis::Model
+  enable_all_index false
+end
 ```
 
 By disabling the `all` index functionality, the IDs of each record created won't be saved. As a side effect, using `all` finder method will raise a `IndexError` exception as we would not have enough information to fetch all records. See https://github.com/rpush/modis/pull/7 for more context.
