@@ -13,29 +13,29 @@ rvm:
   - 2.5
   - 2.6
   - 2.7
-  - jruby-9.1.17.0
-  - jruby-9.2.8.0
+  - 3.0
+  - jruby-9.2.17.0
 
 gemfile:
-  - gemfiles/rails_4.2.gemfile
-  - gemfiles/rails_5.0.gemfile
-  - gemfiles/rails_5.1.gemfile
   - gemfiles/rails_5.2.gemfile
   - gemfiles/rails_6.0.gemfile
+  - gemfiles/rails_6.1.gemfile
 
 matrix:
   fast_finish: true
   exclude:
-    # Rails 4.2 uses BigDecimal.new which was removed in Ruby 2.7
-    - gemfile: gemfiles/rails_4.2.gemfile
-      rvm: 2.7
     # Rails 6 requires Ruby 2.5 or higher
     - gemfile: gemfiles/rails_6.0.gemfile
       rvm: 2.3
+    - gemfile: gemfiles/rails_6.1.gemfile
+      rvm: 2.3
     - gemfile: gemfiles/rails_6.0.gemfile
       rvm: 2.4
-    - gemfile: gemfiles/rails_6.0.gemfile
-      rvm: jruby-9.1.17.0
+    - gemfile: gemfiles/rails_6.1.gemfile
+      rvm: 2.4
+    # Rails 5.2 isn't compatible with Ruby 3.0 or higher
+    - gemfile: gemfiles/rails_5.2.gemfile
+      rvm: 3.0
 
 env:
   global:

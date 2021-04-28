@@ -24,7 +24,7 @@ module Modis
                 :connection_pool
 
     def redis_options
-      @redis_options ||= { driver: :hiredis }
+      @redis_options ||= {}
     end
 
     def connection_pool_size
