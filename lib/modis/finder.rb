@@ -20,8 +20,8 @@ module Modis
 
         records = Modis.with_connection do |redis|
           ids = redis.smembers(key_for(:all))
-          redis.pipelined do
-            ids.map { |id| record_for(redis, id) }
+          redis.pipelined do |pipeline|
+            ids.map { |id| record_for(pipeline, id) }
           end
         end
 
@@ -42,8 +42,13 @@ module Modis
         raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
 
         records = Modis.with_connection do |redis|
-          blk = proc { |id| record_for(redis, id) }
-          ids.count == 1 ? ids.map(&blk) : redis.pipelined { ids.map(&blk) }
+          if ids.count == 1
+            ids.map { |id| record_for(redis, id) }
+          else
+            redis.pipelined do |pipeline|
+              ids.map { |id| record_for(pipeline, id) }
+            end
+          end
         end
 
         models = records_to_models(records)

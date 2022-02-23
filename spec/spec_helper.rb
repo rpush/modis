@@ -12,6 +12,8 @@ end
 
 require 'modis'
 
+Redis.raise_deprecations = true if Gem.loaded_specs['redis'].version >= Gem::Version.new('4.6.0')
+
 Modis.configure do |config|
   config.namespace = 'modis'
 end
