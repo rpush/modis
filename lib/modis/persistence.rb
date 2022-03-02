@@ -135,13 +135,13 @@ module Modis
     def destroy
       self.class.transaction do |redis|
         run_callbacks :destroy do
-          redis.pipelined do
-            remove_from_indexes(redis)
+          redis.pipelined do |pipeline|
+            remove_from_indexes(pipeline)
             if self.class.all_index_enabled?
-              redis.srem(self.class.key_for(:all), id)
-              redis.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+              pipeline.srem(self.class.key_for(:all), id)
+              pipeline.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
             end
-            redis.del(key)
+            pipeline.del(key)
           end
         end
       end
@@ -210,19 +210,19 @@ module Modis
       self.class.transaction do |redis|
         run_callbacks :save do
           run_callbacks callback do
-            redis.pipelined do
+            redis.pipelined do |pipeline|
               attrs = coerced_attributes
               key = self.class.sti_child? ? self.class.sti_base_key_for(id) : self.class.key_for(id)
-              future = attrs.any? ? redis.hmset(key, attrs) : :unchanged
+              future = attrs.any? ? pipeline.hmset(key, attrs) : :unchanged
 
               if new_record?
                 if self.class.all_index_enabled?
-                  redis.sadd(self.class.key_for(:all), id)
-                  redis.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+                  pipeline.sadd(self.class.key_for(:all), id)
+                  pipeline.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
                 end
-                add_to_indexes(redis)
+                add_to_indexes(pipeline)
               else
-                update_indexes(redis)
+                update_indexes(pipeline)
               end
             end
           end
