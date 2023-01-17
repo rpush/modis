@@ -6,7 +6,7 @@ PATH
       activesupport (>= 5.2)
       connection_pool (>= 2)
       msgpack (>= 0.5)
-      redis (>= 3.0, < 5.0)
+      redis (>= 3.0, < 4.7)
 
 GEM
   remote: https://rubygems.org/

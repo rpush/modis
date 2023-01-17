@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'activemodel', '>= 5.2'
   gem.add_runtime_dependency 'activesupport', '>= 5.2'
-  gem.add_runtime_dependency 'redis', '>= 3.0', '< 5.0'
+  gem.add_runtime_dependency 'redis', '>= 3.0', '< 4.7'
   gem.add_runtime_dependency 'connection_pool', '>= 2'
 
   if defined? JRUBY_VERSION
