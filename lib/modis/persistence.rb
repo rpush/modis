@@ -138,8 +138,8 @@ module Modis
           redis.pipelined do |pipeline|
             remove_from_indexes(pipeline)
             if self.class.all_index_enabled?
-              pipeline.srem(self.class.key_for(:all), id)
-              pipeline.srem(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+              pipeline.srem(self.class.key_for(:all), [id])
+              pipeline.srem(self.class.sti_base_key_for(:all), [id]) if self.class.sti_child?
             end
             pipeline.del(key)
           end
@@ -217,8 +217,8 @@ module Modis
 
               if new_record?
                 if self.class.all_index_enabled?
-                  pipeline.sadd(self.class.key_for(:all), id)
-                  pipeline.sadd(self.class.sti_base_key_for(:all), id) if self.class.sti_child?
+                  pipeline.sadd(self.class.key_for(:all), [id])
+                  pipeline.sadd(self.class.sti_base_key_for(:all), [id]) if self.class.sti_child?
                 end
                 add_to_indexes(pipeline)
               else

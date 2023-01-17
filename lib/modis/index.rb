@@ -62,7 +62,7 @@ module Modis
 
       indexed_attributes.each do |attribute|
         key = index_key(attribute, read_attribute(attribute))
-        redis.sadd(key, id)
+        redis.sadd(key, [id])
       end
     end
 
@@ -71,7 +71,7 @@ module Modis
 
       indexed_attributes.each do |attribute|
         key = index_key(attribute, read_attribute(attribute))
-        redis.srem(key, id)
+        redis.srem(key, [id])
       end
     end
 
