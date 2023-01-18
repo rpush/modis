@@ -111,13 +111,8 @@ describe Modis::Persistence do
 
   it 'does not track the ID if the underlying Redis command failed' do
     redis = double(hmset: double(value: nil), sadd: nil)
-    if Gem::Version.new(Redis::VERSION) > Gem::Version.new('4.6.0')
-      expect(model.class).to receive(:transaction).and_yield(Redis::PipelinedConnection.new(Redis::Pipeline::Multi.new(redis)))
-      expect(redis).to receive(:pipelined).and_yield(Redis::PipelinedConnection.new(Redis::Pipeline.new(redis)))
-    else
-      expect(model.class).to receive(:transaction).and_yield(redis)
-      expect(redis).to receive(:pipelined).and_yield(redis)
-    end
+    expect(model.class).to receive(:transaction).and_yield(redis)
+    expect(redis).to receive(:pipelined).and_yield(redis)
     model.save
     expect { model.class.find(model.id) }.to raise_error(Modis::RecordNotFound)
   end
@@ -140,13 +135,8 @@ describe Modis::Persistence do
       model.age = 11
       redis = double
       expect(redis).to receive(:hmset).with("modis:persistence_spec:mock_model:1", ["age", "\v"]).and_return(double(value: 'OK'))
-      if Gem::Version.new(Redis::VERSION) > Gem::Version.new('4.6.0')
-        expect(model.class).to receive(:transaction).and_yield(Redis::PipelinedConnection.new(Redis::Pipeline::Multi.new(redis)))
-        expect(redis).to receive(:pipelined).and_yield(Redis::PipelinedConnection.new(Redis::Pipeline.new(redis)))
-      else
-        expect(model.class).to receive(:transaction).and_yield(redis)
-        expect(redis).to receive(:pipelined).and_yield(redis)
-      end
+      expect(model.class).to receive(:transaction).and_yield(redis)
+      expect(redis).to receive(:pipelined).and_yield(redis)
       model.save!
       expect(model.age).to eq(11)
     end
