@@ -83,7 +83,8 @@ module Modis
 
       def deserialize(record)
         values = record.values
-        values = MessagePack.unpack(msgpack_array_header(values.size) + values.join)
+        header = msgpack_array_header(values.size, values.first.encoding)
+        values = MessagePack.unpack(header + values.join)
         keys = record.keys
         values.each_with_index { |v, i| record[keys[i]] = v }
         record
@@ -97,14 +98,14 @@ module Modis
 
       private
 
-      def msgpack_array_header(values_size)
+      def msgpack_array_header(values_size, encoding)
         if values_size < 16
           [0x90 | values_size].pack("C")
         elsif values_size < 65536
           [0xDC, values_size].pack("Cn")
         else
           [0xDD, values_size].pack("CN")
-        end.force_encoding(Encoding::UTF_8)
+        end.force_encoding(encoding)
       end
     end
 
