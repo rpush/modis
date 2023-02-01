@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-unless ENV['TRAVIS']
+unless ENV['CI']
   begin
     require './spec/support/simplecov_helper'
     include SimpleCovHelper # rubocop:disable Style/MixinUsage
