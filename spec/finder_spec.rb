@@ -183,7 +183,7 @@ describe Modis::Finder do
       it 'transparently upgrades old data' do
         consumer = FindersSpec::Consumer.create!(name: 'Ian')
         Modis.with_connection do |redis|
-          redis.srem(FindersSpec::Consumer.key_for(:all), consumer.id)
+          redis.srem(FindersSpec::Consumer.key_for(:all), [consumer.id])
         end
         expect(FindersSpec::Consumer.find(consumer.id)).to eq(consumer)
       end
