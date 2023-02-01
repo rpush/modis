@@ -1,8 +1,8 @@
 # Changelog
 
-## [4.1.0](https://github.com/rpush/modis/tree/4.1.0) (2023-02-01)
+## [v4.1.0](https://github.com/rpush/modis/tree/v4.1.0) (2023-02-01)
 
-[Full Changelog](https://github.com/rpush/modis/compare/v4.0.1...4.1.0)
+[Full Changelog](https://github.com/rpush/modis/compare/v4.0.1...v4.1.0)
 
 **Closed issues:**
 
