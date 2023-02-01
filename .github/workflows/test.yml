@@ -1,0 +1,67 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CI: "true"
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 6379:6379
+
+    strategy:
+      matrix:
+        gemfile: ['rails_5.2', 'rails_6.0', 'rails_6.1', 'rails_7.0']
+
+        ruby: ['2.4', '2.5', '2.6', '2.7', '3.0', '3.1']
+
+        exclude:
+          # Rails 5.2 requires Ruby < 3.0
+          # https://github.com/rails/rails/issues/40938
+          - ruby: '3.0'
+            gemfile: 'rails_5.2'
+          - ruby: '3.1'
+            gemfile: 'rails_5.2'
+          # Rails >= 6 requires Ruby >= 2.5
+          - ruby: '2.4'
+            gemfile: 'rails_6.0'
+          - ruby: '2.4'
+            gemfile: 'rails_6.1'
+          # Rails >= 7 requires Ruby >= 2.7
+          - ruby: '2.4'
+            gemfile: 'rails_7.0'
+          - ruby: '2.5'
+            gemfile: 'rails_7.0'
+          - ruby: '2.6'
+            gemfile: 'rails_7.0'
+
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+    - name: Run tests
+      run: bundle exec rake
