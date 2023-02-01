@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 begin
-  if ENV['TRAVIS']
+  if ENV['CI']
     namespace :spec do
       task cane: ['spec']
     end
