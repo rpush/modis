@@ -40,4 +40,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rubocop', '0.81.0'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'hiredis', '>= 0.5'
+  gem.add_development_dependency 'github_changelog_generator'
 end
