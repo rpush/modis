@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.1.0](https://github.com/rpush/modis/tree/v4.1.0) (2023-08-01)
+
+[Full Changelog](https://github.com/rpush/modis/compare/v4.1.0...v4.1.0)
+
+**Merged pull requests:**
+
+- Support redis gem v5.x [\#45](https://github.com/rpush/modis/pull/45) ([benlangfeld](https://github.com/benlangfeld))
+
 ## [v4.1.0](https://github.com/rpush/modis/tree/v4.1.0) (2023-02-01)
 
 [Full Changelog](https://github.com/rpush/modis/compare/v4.0.1...v4.1.0)
@@ -10,6 +18,7 @@
 
 **Merged pull requests:**
 
+- Prep v4.1.0 release [\#46](https://github.com/rpush/modis/pull/46) ([benlangfeld](https://github.com/benlangfeld))
 - Upgrades to latest activesupport [\#44](https://github.com/rpush/modis/pull/44) ([benlangfeld](https://github.com/benlangfeld))
 - Switch from Travis CI to GH actions [\#42](https://github.com/rpush/modis/pull/42) ([benlangfeld](https://github.com/benlangfeld))
 - Flexible encoding [\#41](https://github.com/rpush/modis/pull/41) ([benlangfeld](https://github.com/benlangfeld))
