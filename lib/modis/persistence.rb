@@ -83,6 +83,7 @@ module Modis
 
       def deserialize(record)
         values = record.values
+        values.map! { |value| value.force_encoding(values.first.encoding) }
         header = msgpack_array_header(values.size, values.first.encoding)
         values = MessagePack.unpack(header + values.join)
         keys = record.keys
