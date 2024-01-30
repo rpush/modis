@@ -21,6 +21,8 @@ module Modis
         include Modis::Index
 
         base.extend(ClassMethods)
+        base.class_attribute :modis_connection
+        base.modis_connection = :default
       end
     end
 
