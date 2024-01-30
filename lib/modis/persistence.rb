@@ -166,7 +166,7 @@ module Modis
     end
 
     alias update_attributes update
-    deprecate update_attributes: 'please, use update instead'
+    deprecate update_attributes: 'please, use update instead', deprecator: Modis.deprecator
 
     def update!(attrs)
       assign_attributes(attrs)
@@ -174,7 +174,7 @@ module Modis
     end
 
     alias update_attributes! update!
-    deprecate update_attributes!: 'please, use update! instead'
+    deprecate update_attributes!: 'please, use update! instead', deprecator: Modis.deprecator
 
     private
 
