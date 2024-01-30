@@ -20,9 +20,12 @@ end
 
 RSpec.configure do |config|
   config.after :each do
-    Modis.with_connection do |connection|
-      keys = connection.keys "#{Modis.config.namespace}:*"
-      connection.del(*keys) unless keys.empty?
+    RSpec::Mocks.space.proxy_for(Modis).reset
+    Modis.connection_pools.each do |key, _|
+      Modis.with_connection(key) do |connection|
+        keys = connection.keys "#{Modis.config.namespace}:*"
+        connection.del(*keys) unless keys.empty?
+      end
     end
   end
 end
