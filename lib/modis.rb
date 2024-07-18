@@ -19,7 +19,7 @@ require 'modis/model'
 module Modis
   @mutex = Mutex.new
   class << self
-    attr_writer :redis_options, :connection_pool_size, :connection_pool_timeout,
+    attr_writer :connection_pool_size, :connection_pool_timeout,
                 :connection_pools
 
     def redis_options
