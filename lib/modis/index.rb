@@ -36,7 +36,7 @@ module Modis
       end
 
       def index_for(attribute, value)
-        Modis.with_connection(self.modis_connection) do |redis|
+        Modis.with_connection(modis_connection) do |redis|
           key = index_key(attribute, value)
           redis.smembers(key).map(&:to_i)
         end

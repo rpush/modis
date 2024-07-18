@@ -150,7 +150,7 @@ module Modis
     end
 
     def reload
-      new_attributes = Modis.with_connection(self.modis_connection) { |redis| self.class.attributes_for(redis, id) }
+      new_attributes = Modis.with_connection(modis_connection) { |redis| self.class.attributes_for(redis, id) }
       initialize(new_attributes)
       self
     end
@@ -253,7 +253,7 @@ module Modis
 
     def set_id
       namespace = self.class.sti_child? ? self.class.sti_base_absolute_namespace : self.class.absolute_namespace
-      Modis.with_connection(self.modis_connection) do |redis|
+      Modis.with_connection(modis_connection) do |redis|
         self.id = redis.incr("#{namespace}_id_seq")
       end
     end
