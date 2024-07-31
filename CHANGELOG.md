@@ -1,8 +1,17 @@
 # Changelog
 
-## [v4.1.0](https://github.com/rpush/modis/tree/v4.1.0) (2023-08-01)
+## [v4.1.0](https://github.com/rpush/modis/tree/v4.1.0) (2024-07-31)
 
-[Full Changelog](https://github.com/rpush/modis/compare/v4.1.0...v4.1.0)
+[Full Changelog](https://github.com/rpush/modis/compare/v4.2.0...v4.1.0)
+
+**Merged pull requests:**
+
+- Add support for multiple redis connections [\#49](https://github.com/rpush/modis/pull/49) ([SxDx](https://github.com/SxDx))
+- Fix deprecation warning [\#48](https://github.com/rpush/modis/pull/48) ([SxDx](https://github.com/SxDx))
+
+## [v4.2.0](https://github.com/rpush/modis/tree/v4.2.0) (2023-08-01)
+
+[Full Changelog](https://github.com/rpush/modis/compare/v4.1.0...v4.2.0)
 
 **Merged pull requests:**
 
