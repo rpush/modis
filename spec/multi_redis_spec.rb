@@ -41,7 +41,7 @@ describe 'Multiple redis support' do
 end
 
 describe 'backwards compatibility' do
-   before do
+  before do
     Modis.redis_options = {
       url: 'redis://localhost:6379/0'
     }
