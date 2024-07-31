@@ -7,6 +7,7 @@ require 'active_support/all'
 require 'msgpack'
 
 require 'modis/version'
+require 'modis/deprecator'
 require 'modis/configuration'
 require 'modis/attribute'
 require 'modis/errors'
