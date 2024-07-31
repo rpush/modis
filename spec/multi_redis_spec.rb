@@ -9,7 +9,7 @@ module MultiRedisSpec
 
   class CustomUserModel
     include Modis::Model
-    modis_connection = :custom
+    self.modis_connection = :custom
 
     attribute :name, :string
   end
