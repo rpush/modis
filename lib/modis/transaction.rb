@@ -8,7 +8,7 @@ module Modis
 
     module ClassMethods
       def transaction
-        Modis.with_connection { |redis| redis.multi { |transaction| yield(transaction) } }
+        Modis.with_connection(modis_connection) { |redis| redis.multi { |transaction| yield(transaction) } }
       end
     end
   end

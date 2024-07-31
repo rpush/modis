@@ -18,7 +18,7 @@ module Modis
             "because you disabled all index. See :enable_all_index for more."
         end
 
-        records = Modis.with_connection do |redis|
+        records = Modis.with_connection(modis_connection) do |redis|
           ids = redis.smembers(key_for(:all))
           redis.pipelined do |pipeline|
             ids.map { |id| record_for(pipeline, id) }
@@ -41,7 +41,7 @@ module Modis
       def find_all(ids)
         raise RecordNotFound, "Couldn't find #{name} without an ID" if ids.empty?
 
-        records = Modis.with_connection do |redis|
+        records = Modis.with_connection(modis_connection) do |redis|
           if ids.count == 1
             ids.map { |id| record_for(redis, id) }
           else

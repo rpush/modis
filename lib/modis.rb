@@ -19,13 +19,20 @@ require 'modis/model'
 
 module Modis
   @mutex = Mutex.new
-
   class << self
-    attr_writer :redis_options, :connection_pool_size, :connection_pool_timeout,
-                :connection_pool
+    attr_writer :connection_pool_size, :connection_pool_timeout,
+                :connection_pools
 
     def redis_options
-      @redis_options ||= {}
+      @redis_options ||= { default: {} }
+    end
+
+    def redis_options=(options)
+      if options.is_a?(Hash) && options.values.first.is_a?(Hash)
+        @redis_options = options.transform_values(&:dup)
+      else
+        @redis_options[:default] = options
+      end
     end
 
     def connection_pool_size
@@ -36,17 +43,25 @@ module Modis
       @connection_pool_timeout ||= 5
     end
 
-    def connection_pool
-      return @connection_pool if @connection_pool
+    def connection_pools
+      @connection_pools ||= {}
+    end
 
-      @mutex.synchronize do
-        options = { size: connection_pool_size, timeout: connection_pool_timeout }
-        @connection_pool = ConnectionPool.new(options) { Redis.new(redis_options) }
+    def connection_pool(pool_name = :default)
+      connection_pools[pool_name] ||= begin
+        @mutex.synchronize do
+          ConnectionPool.new(
+            size: connection_pool_size,
+            timeout: connection_pool_timeout
+          ) do
+            Redis.new(redis_options[pool_name])
+          end
+        end
       end
     end
 
-    def with_connection
-      connection_pool.with { |connection| yield(connection) }
+    def with_connection(pool_name = :default)
+      connection_pool(pool_name).with { |connection| yield(connection) }
     end
   end
 end
