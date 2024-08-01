@@ -14,18 +14,12 @@ require 'modis'
 
 Redis.raise_deprecations = true if Gem.loaded_specs['redis'].version >= Gem::Version.new('4.6.0')
 
-Modis.configure do |config|
-  config.namespace = 'modis'
-end
-
 RSpec.configure do |config|
   config.after :each do
     RSpec::Mocks.space.proxy_for(Modis).reset
-    Modis.connection_pools.each do |key, _|
-      Modis.with_connection(key) do |connection|
-        keys = connection.keys "#{Modis.config.namespace}:*"
-        connection.del(*keys) unless keys.empty?
-      end
+    Modis.reset!
+    Modis.configure do |modis_config|
+      modis_config.namespace = 'modis'
     end
   end
 end
