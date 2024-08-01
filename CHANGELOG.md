@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.3.1](https://github.com/rpush/modis/tree/v4.3.1) (2024-08-01)
+
+[Full Changelog](https://github.com/rpush/modis/compare/v4.3.0...v4.3.1)
+
+**Closed issues:**
+
+- Release 4.3.0 breaks the Rpush initialization [\#50](https://github.com/rpush/modis/issues/50)
+
+**Merged pull requests:**
+
+- Restore backwards compatibility broken in 4.3.0 [\#51](https://github.com/rpush/modis/pull/51) ([benlangfeld](https://github.com/benlangfeld))
+
 ## [v4.3.0](https://github.com/rpush/modis/tree/v4.3.0) (2024-07-31)
 
 [Full Changelog](https://github.com/rpush/modis/compare/v4.2.0...v4.3.0)
