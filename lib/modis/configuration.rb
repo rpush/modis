@@ -9,8 +9,8 @@ module Modis
   end
 
   class << self
-    attr_reader :config
+    def config
+      @config ||= Configuration.new
+    end
   end
-
-  @config = Configuration.new
 end

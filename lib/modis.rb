@@ -18,10 +18,13 @@ require 'modis/index'
 require 'modis/model'
 
 module Modis
-  @mutex = Mutex.new
   class << self
     attr_writer :connection_pool_size, :connection_pool_timeout,
                 :connection_pools
+
+    def mutex
+      @mutex ||= Mutex.new
+    end
 
     def redis_options
       @redis_options ||= { default: {} }
@@ -56,7 +59,7 @@ module Modis
 
     def connection_pool(pool_name = :default)
       connection_pools[pool_name] ||= begin
-        @mutex.synchronize do
+        mutex.synchronize do
           ConnectionPool.new(
             size: connection_pool_size,
             timeout: connection_pool_timeout
