@@ -39,6 +39,12 @@ module Modis
     end
 
     def reset!
+      connection_pools.each do |key, _|
+        with_connection(key) do |connection|
+          keys = connection.keys "#{config.namespace}:*"
+          connection.del(*keys) unless keys.empty?
+        end
+      end
       instance_variables.each do |var|
         instance_variable_set(var, nil)
         remove_instance_variable(var)
