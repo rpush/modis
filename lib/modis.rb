@@ -31,7 +31,14 @@ module Modis
       if options.is_a?(Hash) && options.values.first.is_a?(Hash)
         @redis_options = options.transform_values(&:dup)
       else
-        @redis_options[:default] = options
+        redis_options[:default] = options
+      end
+    end
+
+    def reset!
+      instance_variables.each do |var|
+        instance_variable_set(var, nil)
+        remove_instance_variable(var)
       end
     end
 

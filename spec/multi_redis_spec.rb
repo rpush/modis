@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 module MultiRedisSpec
   class DefaultUserModel
     include Modis::Model

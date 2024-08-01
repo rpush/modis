@@ -20,6 +20,7 @@ end
 
 RSpec.configure do |config|
   config.after :each do
+    Modis.reset!
     RSpec::Mocks.space.proxy_for(Modis).reset
     Modis.connection_pools.each do |key, _|
       Modis.with_connection(key) do |connection|
