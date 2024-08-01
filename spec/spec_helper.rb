@@ -18,8 +18,8 @@ RSpec.configure do |config|
   config.after :each do
     RSpec::Mocks.space.proxy_for(Modis).reset
     Modis.reset!
-    Modis.configure do |config|
-      config.namespace = 'modis'
+    Modis.configure do |modis_config|
+      modis_config.namespace = 'modis'
     end
   end
 end
