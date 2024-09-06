@@ -277,7 +277,7 @@ describe Modis::Persistence do
   end
 
   describe 'update_attributes!' do
-    around(:each) { |example| ActiveSupport::Deprecation.silence { example.run } }
+    around(:each) { |example| ActiveSupport::Deprecation.new.silence { example.run } }
 
     it 'updates the given attributes' do
       model.update_attributes!(name: 'Derp', age: 29)
@@ -331,7 +331,7 @@ describe Modis::Persistence do
   end
 
   describe 'update_attributes' do
-    around(:each) { |example| ActiveSupport::Deprecation.silence { example.run } }
+    around(:each) { |example| ActiveSupport::Deprecation.new.silence { example.run } }
 
     it 'updates the given attributes' do
       model.update_attributes(name: 'Derp', age: 29)
