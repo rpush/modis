@@ -14,6 +14,8 @@ module AttributeSpec
     attribute :array, :array
     attribute :hash, :hash
     attribute :string_or_hash, %i[string hash]
+
+    alias_attribute :proportion, :percentage
   end
 end
 
@@ -23,6 +25,11 @@ describe Modis::Attribute do
   it 'defines attributes' do
     model.name = 'bar'
     expect(model.name).to eq('bar')
+  end
+
+  it 'defines attribute aliases' do
+    model.percentage = 18.6
+    expect(model.proportion).to eq(18.6)
   end
 
   it 'applies an default value' do
