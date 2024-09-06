@@ -1,5 +1,14 @@
 # Changelog
 
+## [v4.3.2](https://github.com/rpush/modis/tree/v4.3.2) (2024-09-06)
+
+[Full Changelog](https://github.com/rpush/modis/compare/v4.3.1...v4.3.2)
+
+**Merged pull requests:**
+
+- Test on Rails 7.2 [\#54](https://github.com/rpush/modis/pull/54) ([benlangfeld](https://github.com/benlangfeld))
+- Test on new Ruby/Rails versions [\#52](https://github.com/rpush/modis/pull/52) ([benlangfeld](https://github.com/benlangfeld))
+
 ## [v4.3.1](https://github.com/rpush/modis/tree/v4.3.1) (2024-08-01)
 
 [Full Changelog](https://github.com/rpush/modis/compare/v4.3.0...v4.3.1)
