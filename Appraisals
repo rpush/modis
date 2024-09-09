@@ -21,8 +21,8 @@ appraise 'rails-7.0' do
 end
 
 appraise 'rails-7.1' do
-  gem 'activemodel', '~> 7.1.0'
-  gem 'activesupport', '~> 7.1.0'
+  gem 'activemodel', '~> 7.1.0', '!= 7.1.4' # https://github.com/rails/rails/issues/52820
+  gem 'activesupport', '~> 7.1.0', '!= 7.1.4' # https://github.com/rails/rails/issues/52820
 end
 
 appraise 'rails-7.2' do
